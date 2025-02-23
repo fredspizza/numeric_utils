@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Downgraded intl to 0.19.0 due to Flutter pinning
+
 ## 0.1.0
 
 - Initial version of numeric_utils.
