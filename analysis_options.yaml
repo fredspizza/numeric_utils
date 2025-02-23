@@ -1,0 +1,33 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart" # Exclude generated files
+    - "**/*.freezed.dart" # Exclude freezed files
+
+linter:
+  rules:
+    # Additional rules to enforce good practices
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - always_declare_return_types
+    - always_put_required_named_parameters_first
+    - avoid_print # Remove before production
+    - avoid_unnecessary_containers
+    - avoid_void_async
+    - curly_braces_in_flow_control_structures
+    - prefer_if_null_operators
+    - prefer_interpolation_to_compose_strings
+    - prefer_single_quotes
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - unnecessary_brace_in_string_interps
+    - unnecessary_null_checks
+    - use_key_in_widget_constructors
+
+    # Customize lints
+    - public_member_api_docs: true
+    - avoid_classes_with_only_static_members: false
+    - always_specify_types: false

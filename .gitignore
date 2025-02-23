@@ -1,0 +1,39 @@
+# Dart and Flutter related ignores
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.pubspec.lock
+
+# IDE related ignores
+.idea/
+*.iml
+/shelf/
+.vscode/
+*.code-workspace
+*.swo
+*.swp
+.DS_Store # macOS system file
+
+# OS related ignores
+Thumbs.db
+
+# Build related ignores
+build/
+*.apk
+*.ipa
+*.app
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+
+# Coverage reports
+coverage/
+
+# Example specific ignores
+example/.dart_tool/
+example/.packages
+example/.pub-cache/
+example/.pubspec.lock
