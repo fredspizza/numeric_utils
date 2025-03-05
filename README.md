@@ -22,6 +22,10 @@ A Dart library providing a collection of useful numeric constants and extension 
     - Extension method for `BigInt` to perform division with various rounding modes.
   - **MultipleOf Extensions:**
     - Extension methods for `BigInt` and `int` to easily check if a number is a multiple of another.
+  - **Rational Parsing:**
+    - `RationalParsing.fromString` parses strings into `Rational` objects, supporting round-trip compatibility with `Rational.toString`.
+    - Handles mixed numbers (e.g., `"1 3/4"`), simple fractions (e.g., `"3/4"`), integers, decimals, and scientific notation with flexible whitespace.
+
 
 ## Getting Started
 
@@ -83,6 +87,31 @@ void main() {
   final price = Rational.parse("19.995");
   print('Price in USD: ${price.toCurrency(locale: 'en_US')}');
   print('Price in EUR: ${price.toCurrency(locale: 'fr_FR')}');
+}
+```
+
+**Example - Rational Parsing:**
+
+```Dart
+import 'package:numeric_utils/numeric_utils.dart';
+import 'package:rational/rational.dart';
+
+void main() {
+  final mixedNumber = RationalParsing.fromString(" 1 3/4 ");
+  print('Mixed number: $mixedNumber'); // Outputs: 7/4
+
+  final fraction = RationalParsing.fromString(" - 3/4 ");
+  print('Fraction: $fraction'); // Outputs: -3/4
+
+  final decimal = RationalParsing.fromString("0.75");
+  print('Decimal: $decimal'); // Outputs: 3/4
+  
+  // Round-trip support for toString()
+  final roundTrip = RationalParsing.fromString(Rational.parse("0.75").toString());
+  print('Round trip: $roundTrip'); // Outputs: 3/4
+
+  // This causes a FormatException - Rational cannot parse its own output
+  Rational.parse(Rational.parse("0.75").toString());
 }
 ```
 

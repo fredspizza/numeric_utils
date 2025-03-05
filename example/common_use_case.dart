@@ -19,4 +19,15 @@ void main() {
   final bigIntValue = BigInt.from(10);
   final isMultiple = bigIntValue.isMultipleOf(BigInt.from(5));
   print('Is 10 a multiple of 5: $isMultiple'); // Output: Is 10 a multiple of 5: true
+
+  final asFractionalString = Rational.parse('0.75').toString();
+  final parsedString       = RationalParsing.fromString(asFractionalString).toString();
+  print('RationalParsing.fromString($asFractionalString) succeeds: $parsedString == $asFractionalString');
+
+  try {
+    Rational.parse(asFractionalString);
+    print('Oh ho - this is unexpected! Parsing $asFractionalString worked!');
+  } catch (e) {
+    print('Rational.parse($asFractionalString) fails: ${e.toString()}');
+  }
 }

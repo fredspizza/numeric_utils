@@ -445,6 +445,79 @@ extension RationalFormattingExtension on Rational {
   }
 }
 
+/// A utility class for parsing strings into [Rational] objects with round-trip support.
+/// Unlike [Rational.parse], which only handles integers, decimals, and scientific notation,
+/// this class can parse fractions (e.g., "7/4") produced by [Rational.toString], ensuring
+/// compatibility with its output format as well as mixed fractions (e.g., "1 3/4").
+class RationalParsing {
+  // Regex for mixed numbers and simple fractions with flexible whitespace
+  // - \s*: Optional whitespace at the start
+  // - (-)?\s*: Optional negative sign with optional whitespace after it
+  // - (?:(\d+)\s+)?\s*: Optional whole part with optional whitespace around it
+  // - (\d+)\s*/\s*(\d+): Fraction part with optional whitespace around the slash
+  // - \s*: Optional whitespace at the end
+  static final fractionRegex = RegExp(r'^\s*(-)?\s*(?:(\d+)\s+)?(\d+)\s*/\s*(\d+)\s*$');
+
+  /// Parses a string into a [Rational] object, supporting fractions, mixed numbers,
+  /// integers, decimals, and scientific notation.
+  ///
+  /// This method extends the functionality of [Rational.parse] by handling fraction
+  /// formats produced by [Rational.toString] (e.g., "7/4") as well mixed fractions
+  /// (e.g., "1 3/4"). It ignores whitespace and accepts positive and negative:
+  /// - Mixed numbers (e.g., "1 3/4", " - 2 1/2 ") with optional whole parts and whitespace
+  /// - Simple fractions (e.g., "3/4", " - 5/6 ") with optional whitespace
+  /// - Integers, decimals, and scientific notation (e.g., "5", "0.75", "1e-3"), passed to [Rational.parse]
+  ///
+  /// Example:
+  /// ```dart
+  /// print(RationalParsing.fromString("1 3/4"));      // Outputs: 7/4
+  /// print(RationalParsing.fromString("-2 1/2"));     // Outputs: -5/2
+  /// print(RationalParsing.fromString(" 3/4 "));      // Outputs: 3/4
+  /// print(RationalParsing.fromString(" - 5/6 "));    // Outputs: -5/6
+  /// print(RationalParsing.fromString("5"));          // Outputs: 5
+  /// print(RationalParsing.fromString("0.75"));       // Outputs: 3/4
+  /// print(RationalParsing.fromString("1e-3"));       // Outputs: 1/1000
+  /// ```
+  ///
+  /// - [value]: The string to parse into a [Rational]
+  /// - Returns: A [Rational] object representing the parsed value
+  /// - Throws: [FormatException] if the string is not a valid number or fraction format,
+  ///          or if the denominator of a fraction is zero
+  static Rational fromString(String value) {
+    // Case 1: Mixed number or simple fraction (e.g., " 1 3/4 ", " - 3/4 ")
+    if (fractionRegex.hasMatch(value)) {
+      final match = fractionRegex.firstMatch(value)!;
+
+      // Extract the negative sign (group 1)
+      final isNegative = match.group(1) != null;
+
+      // Whole part might be null if there's no whole number (e.g., "3/4")
+      final whole = match.group(2);
+      final numerator = int.parse(match.group(3)!);
+      final denominator = int.parse(match.group(4)!);
+
+      if (denominator == 0) {
+        throw FormatException('Denominator cannot be zero in fraction: $value');
+      }
+
+      // If there's a whole part, convert mixed number to improper fraction
+      // Otherwise, use just the fraction part
+      final wholePart = denominator * (whole != null ? int.parse(whole) : 0);
+      final result = Rational.fromInt(wholePart + numerator, denominator);
+      return isNegative ? -result : result;
+    }
+    // Case 2: Decimal or Integer (e.g., " 0.75 ", " 5 ")
+    else {
+      try {
+        // Rational.parse doesn't handle whitespace, but we do
+        return Rational.parse(value.trim());
+      } catch (e) {
+        throw FormatException('Invalid number format: $value');
+      }
+    }
+  }
+}
+
 /// Extension on `BigInt` to support division with rounding
 extension BigIntRoundedDivisionExtension on BigInt {
   /// Divides `this` by [denominator] and rounds the result using the specified [mode]

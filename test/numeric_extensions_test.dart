@@ -287,6 +287,27 @@ void main() {
     });
   });
 
+  group('Rational Parsing', () {
+    test('fromString', () {
+      expect(RationalParsing.fromString('.123'),       Rational.parse('.123'));
+      expect(RationalParsing.fromString('0.123'),      Rational.parse('0.123'));
+      expect(RationalParsing.fromString('12.34'),      Rational.parse('12.34'));
+      expect(RationalParsing.fromString('12.3e4'),     Rational.parse('12.3e4'));
+      expect(RationalParsing.fromString('12e+3'),      Rational.parse('12e+3'));
+      expect(RationalParsing.fromString('12.3e-4'),    Rational.parse('12.3e-4'));
+      expect(RationalParsing.fromString('2.0'),        Rational.fromInt(2));
+      expect(RationalParsing.fromString('2'),          Rational.fromInt(2));
+      expect(RationalParsing.fromString('3/4'),        Rational.fromInt(3, 4));
+      expect(RationalParsing.fromString(' 3 / 4 '),    Rational.fromInt(3, 4));
+      expect(RationalParsing.fromString('-3/4'),       Rational.fromInt(-3, 4));
+      expect(RationalParsing.fromString('7/4'),        Rational.fromInt(7, 4));
+      expect(RationalParsing.fromString('7/4'),        Rational.parse('1.75'));
+      expect(RationalParsing.fromString('1 3/4'),      Rational.fromInt(7, 4));
+      expect(RationalParsing.fromString('-1 3/4'),     Rational.fromInt(-7, 4));
+      expect(RationalParsing.fromString('- 1 3 / 4 '), Rational.fromInt(-7, 4));
+    });
+  });
+
   group('Rational Formatting Extensions', () {
     test('toCurrency', () {
       // Test currencies with decimal coins
