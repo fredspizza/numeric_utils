@@ -516,6 +516,27 @@ class RationalParsing {
       }
     }
   }
+
+  /// Attempts to parse a string into a [Rational] object.
+  ///
+  /// This method uses [fromString] to parse the input string. If parsing fails,
+  /// it returns `null` instead of throwing an exception.
+  ///
+  /// Example:
+  /// ```dart
+  /// print(RationalParsing.tryFromString("1 3/4"));   // Outputs: 7/4
+  /// print(RationalParsing.tryFromString("invalid")); // Outputs: null
+  /// ```
+  ///
+  /// - [value]: The string to attempt to parse into a [Rational].
+  /// - Returns: A [Rational] object if parsing is successful, or `null` if parsing fails.
+  static Rational? tryFromString(String value) {
+    try {
+      return fromString(value);
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 /// Extension on `BigInt` to support division with rounding

@@ -1,6 +1,6 @@
 name: numeric_utils_example
 description: Demonstrates usage of the numeric_utils Dart library.
-version: 0.2.0
+version: 0.2.1
 publish_to: none
 
 environment:

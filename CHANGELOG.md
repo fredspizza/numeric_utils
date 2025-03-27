@@ -1,3 +1,8 @@
+## [0.2.1] - 2025-03-26
+
+### Added
+- `RationalParsing.tryFromString`: A version of `RationalParsing.fromString` that returns null if parsing fails.
+
 ## [0.2.0] - 2025-03-05
 
 ### Added
