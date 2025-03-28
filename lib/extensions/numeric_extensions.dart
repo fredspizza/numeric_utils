@@ -406,37 +406,58 @@ extension RationalFormattingExtension on Rational {
   }
 
   /// Formats the rational number as a percentage string, with a specified number of decimal places,
-  /// applying the given rounding mode
+  /// applying the given rounding mode.
   ///
-  /// Example:
+  /// Allows formatting percentages where the input is either a ratio value (e.g., 0.33)
+  /// or already a value between 0 and 100 (e.g., 33).
+  ///
+  /// Example (assuming `asRatio` is true - default):
   /// ```dart
   /// import 'package:numeric_utils/numeric_extensions.dart';
   /// import 'package:rational/rational.dart';
   ///
-  /// final rational = Rational.fromInt(1, 3);
-  /// print(rational.toPercentage(2));                          // Output: 33.33% (default halfUp rounding)
-  /// print(rational.toPercentage(2, mode: RoundingMode.ceil)); // Output: 33.34% (using ceil rounding)
-  /// print(rational.toPercentage(0));                          // Output: 33% (zero decimal places)
-  /// print(rational.toPercentage(2, locale: 'fr_FR'));         // Output: 33,33% (French locale)
+  /// final rationalUnit = Rational.fromInt(1, 3);
+  /// print(rationalUnit.toPercentage(2));                          // Output: 33.33%
+  /// print(rationalUnit.toPercentage(2, mode: RoundingMode.ceil)); // Output: 33.34%
+  /// print(rationalUnit.toPercentage(0));                          // Output: 33%
+  /// print(rationalUnit.toPercentage(2, locale: 'fr_FR'));         // Output: 33,33%
+  /// ```
+  ///
+  /// Example (when `asRatio` is false):
+  /// ```dart
+  /// final rationalPercentage = Rational.fromInt(66, 2); // Represents 33
+  /// print(rationalPercentage.toPercentage(2, asRatio: false));     // Output: 33.00%
   /// ```
   ///
   /// Parameters:
-  ///   - `places`: The number of decimal places to include in the formatted percentage string
-  ///   - `mode`: The rounding mode to apply when truncating or rounding the number. Defaults to [RoundingMode.halfUp]
-  ///   - `locale`: The locale to use for formatting the number. Defaults to the system's default locale
+  ///   - `places`: The number of decimal places to include in the formatted percentage string.
+  ///   - `mode`: The rounding mode to apply when truncating or rounding the number. Defaults to [RoundingMode.halfUp].
+  ///   - `locale`: The locale to use for formatting the number. Defaults to the system's default locale.
+  ///   - `asRatio`: A boolean indicating whether the rational number should be treated as a ratio (between 0 and 1) and multiplied by 100 before formatting. Defaults to `true`.
   ///
   /// Returns:
-  ///   A localized percentage string representation of the rational number with the specified decimal places and rounding
+  ///   A localized percentage string representation of the rational number with the specified decimal places and rounding.
   ///
   /// Throws:
-  ///   - `ArgumentError`: If `places` is negative
-  String toPercentage(int places, {RoundingMode mode = RoundingMode.halfUp, String? locale}) {
+  ///   - `ArgumentError`: If `places` is negative.
+  String toPercentage(
+      int places, {
+        RoundingMode mode = RoundingMode.halfUp,
+        String? locale,
+        bool asRatio = true,
+      }) {
     if (places < 0) {
       throw ArgumentError('The number of places must be non-negative.');
     }
-    final scale = Rational(BigInt.from(10).pow(places + 2));
-    final scaled = (this * scale).rounded(mode);
-    final result = scaled / Rational(BigInt.from(10).pow(places));
+
+    Rational valueToFormat = this;
+    if (asRatio) {
+      valueToFormat *= Rational.fromInt(100);
+    }
+
+    final scale = Rational(BigInt.from(10).pow(places));
+    final scaled = (valueToFormat * scale).rounded(mode);
+    final result = scaled / scale;
 
     final numberFormat = NumberFormat.decimalPattern(locale);
     numberFormat.minimumFractionDigits = places;

@@ -1,3 +1,10 @@
+## [0.2.2] - 2025-03-27
+
+### Upgraded
+- `RationalFormattingExtension.toPercentage`: Now takes an optional parameter `asRatio` to determine whether to 
+  treat the input as a ratio value (e.g., 33/100 or 0.33) or a value between 0 and 100 (e.g., 33 out of 100).
+  Defaults to `true` for backward compatibility.
+
 ## [0.2.1] - 2025-03-26
 
 ### Added
