@@ -1,3 +1,15 @@
+## [0.2.3] - 2025-03-29
+
+### Added
+
+- `xxxInRangeExtension`: New extensions that provide an `isInRange` method to check if a value is within a specified 
+  range (for `int`, `BigInt`, `double` and `Rational`).
+- `xxxToleranceExtension`: New extensions that provide `isWithinTolerance` methods to check if a value is within a 
+  specified tolerance of another value (for `int`, `BigInt`, `double` and `Rational`).
+- `DoubleToleranceExtension`: The double version of `xxxToleranceExtension` also provides an `isCloseTo` method to check 
+  if a double value is close to another value, considering floating-point inaccuracies.
+- `xxxMultipleOfExtension`: Added `double` and `Rational` versions of `isMultipleOf` methods.
+
 ## [0.2.2] - 2025-03-27
 
 ### Upgraded

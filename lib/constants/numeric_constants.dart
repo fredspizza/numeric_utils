@@ -26,53 +26,56 @@ class IntConstants {
 final class RationalConstants {
   // Large Numbers
   /// Represents one trillion (1,000,000,000,000)
-  static final Rational trillion = Rational.fromInt(1000000000000, 1);
+  static final Rational trillion = Rational.fromInt(1000000000000);
 
   /// Represents one billion (1,000,000,000)
-  static final Rational billion = Rational.fromInt(1000000000, 1);
+  static final Rational billion = Rational.fromInt(1000000000);
 
   /// Represents one million (1,000,000)
-  static final Rational million = Rational.fromInt(1000000, 1);
+  static final Rational million = Rational.fromInt(1000000);
 
   /// Represents one thousand (1,000)
-  static final Rational thousand = Rational.fromInt(1000, 1);
+  static final Rational thousand = Rational.fromInt(1000);
 
   /// Represents one hundred (100)
-  static final Rational hundred = Rational.fromInt(100, 1);
+  static final Rational hundred = Rational.fromInt(100);
 
   // Small Integers
   /// Represents one dozen (12)
-  static final Rational dozen = Rational.fromInt(12, 1);
+  static final Rational dozen = Rational.fromInt(12);
 
   /// Represents twelve (12)
   static final Rational twelve = dozen;
 
+  /// Represents eleven (11)
+  static final Rational eleven = Rational.fromInt(11);
+
   /// Represents ten (10)
-  static final Rational ten = Rational.fromInt(10, 1);
+  static final Rational ten = Rational.fromInt(10);
 
   /// Represents nine (9)
-  static final Rational nine = Rational.fromInt(9, 1);
+  static final Rational nine = Rational.fromInt(9);
 
   /// Represents eight (8)
-  static final Rational eight = Rational.fromInt(8, 1);
+  static final Rational eight = Rational.fromInt(8);
 
   /// Represents seven (7)
-  static final Rational seven = Rational.fromInt(7, 1);
+  static final Rational seven = Rational.fromInt(7);
 
   /// Represents six (6)
-  static final Rational six = Rational.fromInt(6, 1);
+  static final Rational six = Rational.fromInt(6);
 
   /// Represents five (5)
-  static final Rational five = Rational.fromInt(5, 1);
+  static final Rational five = Rational.fromInt(5);
 
   /// Represents four (4)
-  static final Rational four = Rational.fromInt(4, 1);
+  static final Rational four = Rational.fromInt(4);
 
   /// Represents three (3)
-  static final Rational three = Rational.fromInt(3, 1);
+  static final Rational three = Rational.fromInt(3);
 
   /// Represents two (2)
-  static final Rational two = Rational.fromInt(2, 1);
+  static final Rational two = Rational.fromInt(2);
 
   // Fractions
   /// Represents three quarters (3/4)

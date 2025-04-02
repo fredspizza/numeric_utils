@@ -1,6 +1,7 @@
 // Copyright 2025 Brian Erst
 // SPDX-License-Identifier: MIT
 
+import 'package:numeric_utils/constants/numeric_constants.dart';
 import 'package:test/test.dart';
 import 'package:rational/rational.dart';
 import 'package:numeric_utils/extensions/numeric_extensions.dart';
@@ -355,6 +356,138 @@ void main() {
       expect(11.isMultipleOf(5), false);
       expect(10.isMultipleOf(0), false);
       expect(0.isMultipleOf(0), true);
+    });
+  });
+
+  group('Double MultipleOf Extension', () {
+    test('isMultipleOf', () {
+      expect(10.0.isMultipleOf(5.0), true);
+      expect(11.0.isMultipleOf(5.0), false);
+      expect(10.0.isMultipleOf(0.0), false);
+      expect(0.0.isMultipleOf(0.0), true);
+    });
+  });
+
+  group('Rational MultipleOf Extension', () {
+    test('isMultipleOf', () {
+      expect(RationalConstants.ten.isMultipleOf(RationalConstants.five), true);
+      expect(RationalConstants.eleven.isMultipleOf(RationalConstants.five), false);
+      expect(RationalConstants.ten.isMultipleOf(Rational.zero), false);
+      expect(Rational.zero.isMultipleOf(Rational.zero), true);
+      expect(RationalConstants.quarter.isMultipleOf(RationalConstants.quarter), true);
+      expect(RationalConstants.quarter.isMultipleOf(RationalConstants.eighth), true);
+      expect(RationalConstants.eighth.isMultipleOf(RationalConstants.quarter), false);
+      expect(Rational.fromInt(4, 8).isMultipleOf(RationalConstants.quarter), true);
+      expect(Rational.fromInt(3, 8).isMultipleOf(RationalConstants.eighth), true);
+      expect(Rational.fromInt(3, 8).isMultipleOf(RationalConstants.sixteenth), true);
+    });
+  });
+
+  group('InRange Extensions', () {
+    test('BigInt isInRange', () {
+      expect(BigInt.from(5).isInRange(BigInt.from(1), BigInt.from(10)), true);
+      expect(BigInt.from(5).isInRange(BigInt.from(1), BigInt.from(10), inclusive: false), true);
+      expect(BigInt.from(10).isInRange(BigInt.from(1), BigInt.from(10), inclusive: false), false);
+      expect(BigInt.from(1).isInRange(BigInt.from(1), BigInt.from(10), inclusive: true), true);
+      expect(BigInt.from(10).isInRange(BigInt.from(1), BigInt.from(10), inclusive: true), true);
+      expect(BigInt.from(0).isInRange(BigInt.from(1), BigInt.from(10)), false);
+      expect(BigInt.from(11).isInRange(BigInt.from(1), BigInt.from(10)), false);
+    });
+
+    test('Int isInRange', () {
+      expect(5.isInRange(1, 10), true);
+      expect(5.isInRange(1, 10, inclusive: false), true);
+      expect(10.isInRange(1, 10, inclusive: false), false);
+      expect(1.isInRange(1, 10, inclusive: true), true);
+      expect(10.isInRange(1, 10, inclusive: true), true);
+      expect(0.isInRange(1, 10), false);
+      expect(11.isInRange(1, 10), false);
+    });
+
+    test('Double isInRange', () {
+      expect(5.0.isInRange(1.0, 10.0), true);
+      expect(5.0.isInRange(1.0, 10.0, inclusive: false), true);
+      expect(10.0.isInRange(1.0, 10.0, inclusive: false), false);
+      expect(1.0.isInRange(1.0, 10.0, inclusive: true), true);
+      expect(10.0.isInRange(1.0, 10.0, inclusive: true), true);
+      expect(0.0.isInRange(1.0, 10.0), false);
+      expect(11.0.isInRange(1.0, 10.0), false);
+    });
+
+    test('Rational isInRange', () {
+      expect(Rational.fromInt(5).isInRange(Rational.fromInt(1), Rational.fromInt(10)), true);
+      expect(Rational.fromInt(5).isInRange(Rational.fromInt(1), Rational.fromInt(10), inclusive: false), true);
+      expect(Rational.fromInt(10).isInRange(Rational.fromInt(1), Rational.fromInt(10), inclusive: false), false);
+      expect(Rational.fromInt(1).isInRange(Rational.fromInt(1), Rational.fromInt(10), inclusive: true), true);
+      expect(Rational.fromInt(10).isInRange(Rational.fromInt(1), Rational.fromInt(10), inclusive: true), true);
+      expect(Rational.fromInt(0).isInRange(Rational.fromInt(1), Rational.fromInt(10)), false);
+      expect(Rational.fromInt(11).isInRange(Rational.fromInt(1), Rational.fromInt(10)), false);
+    });
+  });
+
+  group('Tolerance Extensions', () {
+    test('BigIntToleranceExtension', () {
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(5), BigInt.from(0)), true);
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(5), BigInt.from(1)), true);
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(6), BigInt.from(0)), false);
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(6), BigInt.from(1)), true);
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(10), BigInt.from(5)), true);
+      expect(BigInt.from(5).isWithinTolerance(BigInt.from(10), BigInt.from(4)), false);
+      expect(() => BigInt.from(5).isWithinTolerance(BigInt.from(6), BigInt.from(-1)), throwsA(isA<AssertionError>()));
+    });
+
+    test('IntToleranceExtension', () {
+      expect(5.isWithinTolerance(5, 0), true);
+      expect(5.isWithinTolerance(5, 1), true);
+      expect(5.isWithinTolerance(6, 0), false);
+      expect(5.isWithinTolerance(6, 1), true);
+      expect(5.isWithinTolerance(10, 5), true);
+      expect(5.isWithinTolerance(10, 4), false);
+      expect(() => 5.isWithinTolerance(6, -1), throwsA(isA<AssertionError>()));
+    });
+
+    test('RationalToleranceExtension', () {
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(5), Rational.fromInt(0)), true);
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(5), Rational.fromInt(1)), true);
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(6), Rational.fromInt(0)), false);
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(6), Rational.fromInt(1)), true);
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(10), Rational.fromInt(5)), true);
+      expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(10), Rational.fromInt(4)), false);
+      expect(() => Rational.fromInt(5).isWithinTolerance(Rational.fromInt(6), Rational.fromInt(-1)), throwsA(isA<AssertionError>()));
+    });
+  });
+
+  group('DoubleToleranceExtension', () {
+    test('isWithinTolerance', () {
+      expect(5.0.isWithinTolerance(5.0, 0), true);
+      expect(5.0.isWithinTolerance(5.0, 1), true);
+      expect(5.0.isWithinTolerance(6.0, 0), false);
+      expect(5.0.isWithinTolerance(6.0, 1), true);
+      expect(5.0.isWithinTolerance(10.0, 5), true);
+      expect(5.0.isWithinTolerance(10.0, 4), false);
+      expect(() => 5.0.isWithinTolerance(6.0, -1), throwsA(isA<AssertionError>()));
+    });
+
+    test('isCloseTo', () {
+      expect(5.0.isCloseTo(5.0), true);
+      expect(5.0.isCloseTo(5.0, relativeTolerance: 1e-9, absoluteTolerance: 1e-12), true);
+      expect(5.0.isCloseTo(6.0), false);
+      expect(5.0.isCloseTo(6.0, relativeTolerance: 1e-1), false);
+      expect(5.0.isCloseTo(10.0), false);
+      expect(5.0.isCloseTo(10.0, absoluteTolerance: 5), true);
+      expect(() => 5.0.isCloseTo(6.0, relativeTolerance: -1), throwsA(isA<AssertionError>()));
+      expect(() => 5.0.isCloseTo(6.0, absoluteTolerance: -1), throwsA(isA<AssertionError>()));
+    });
+
+    test('isCloseTo edge cases', () {
+      expect(double.infinity.isCloseTo(double.infinity), true);
+      expect(double.infinity.isCloseTo(-double.infinity), false);
+      expect(double.nan.isCloseTo(double.nan), false);
+    });
+
+    test('isCloseTo default tolerances', () {
+      expect((1.0 + 1e-10).isCloseTo(1.0), true);
+      expect((1.0 + 1e-8).isCloseTo(1.0), false);
     });
   });
 }

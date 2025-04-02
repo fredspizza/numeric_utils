@@ -1,6 +1,8 @@
 // Copyright 2025 Brian Erst
 // SPDX-License-Identifier: MIT
 
+import 'dart:math' as math;
+
 import 'package:intl/intl.dart';
 import 'package:numeric_utils/constants/numeric_constants.dart';
 import 'package:rational/rational.dart';
@@ -597,23 +599,6 @@ extension BigIntRoundedDivisionExtension on BigInt {
   }
 }
 
-/// Extension on `BigInt` to support isMultipleOf
-extension BigIntMultipleOfExtension on BigInt {
-  /// Returns true if this BigInt is a multiple of [other]
-  ///
-  /// Example:
-  /// ```dart
-  /// BigInt.from(10).isMultipleOf(BigInt.from(5)); // Output: true
-  /// BigInt.from(11).isMultipleOf(BigInt.from(5)); // Output: false
-  /// ```
-  bool isMultipleOf(BigInt other) {
-    if (other == BigInt.zero) {
-      return this == BigInt.zero;
-    }
-    return (this % other) == BigInt.zero;
-  }
-}
-
 /// Extension on `int` to support isMultipleOf
 extension IntMultipleOfExtension on int {
   /// Returns true if this int is a multiple of [other]
@@ -623,10 +608,226 @@ extension IntMultipleOfExtension on int {
   /// 10.isMultipleOf(5); // Output: true
   /// 11.isMultipleOf(5); // Output: false
   /// ```
-  bool isMultipleOf(int other) {
-    if (other == 0) {
-      return this == 0;
+  bool isMultipleOf(int other) => other == 0 ? this == 0 : this % other == 0;
+}
+
+/// Extension on `BigInt` to support isMultipleOf, isInRange
+extension BigIntMultipleOfExtension on BigInt {
+  /// Returns true if this BigInt is a multiple of [other]
+  ///
+  /// Example:
+  /// ```dart
+  /// BigInt.from(10).isMultipleOf(BigInt.from(5)); // Output: true
+  /// BigInt.from(11).isMultipleOf(BigInt.from(5)); // Output: false
+  /// ```
+  bool isMultipleOf(BigInt other) => other == BigInt.zero ? this == BigInt.zero : this % other == BigInt.zero;
+}
+
+extension DoubleMultipleOfExtension on double {
+  /// Returns true if this double is a multiple of [other]
+  ///
+  /// Example:
+  /// ```dart
+  /// 10.0.isMultipleOf(5.0); // Output: true
+  /// 11.0.isMultipleOf(5.0); // Output: false
+  /// ```
+  bool isMultipleOf(double other) => other == 0 ? this == 0 : (this % other) == 0;
+}
+
+/// Extension on `Rational` to support isMultipleOf
+extension RationalMultipleOfExtension on Rational {
+  /// Returns true if this Rational is a multiple of [other]
+  ///
+  /// Example:
+  /// ```dart
+  /// Rational.parse("10").isMultipleOf(Rational.parse("5")); // Output: true
+  /// Rational.parse("11").isMultipleOf(Rational.parse("5")); // Output: false
+  /// ```
+  bool isMultipleOf(Rational other) => other == Rational.zero ? this == Rational.zero : (this % other) == Rational.zero;
+}
+
+/// Extension on `int` to support isInRange
+extension IntIsInRangeExtension on int {
+  /// Checks if the int value is within the specified range.
+  ///
+  /// Determines if `this` int is between [min] and [max].
+  ///
+  /// - If [inclusive] is `true`, the range is inclusive,
+  ///   meaning the method returns `true` if the value is equal to [min] or [max].
+  /// - If [inclusive] is `false`, the range is exclusive,
+  ///   meaning the method returns `true` only if the value is strictly between [min] and [max].
+  ///
+  /// Parameters:
+  /// - [min]: The lower bound of the range.
+  /// - [max]: The upper bound of the range.
+  /// - [inclusive]: A boolean indicating whether the range is inclusive. Defaults to `true`.
+  ///
+  /// Returns:
+  /// - `true` if the int is within the specified range, according to the [inclusive] flag.
+  /// - `false` otherwise.
+  bool isInRange(int min, int max, {bool inclusive = true}) {
+    assert (min <= max);
+    if (inclusive) {
+      return this >= min && this <= max;
+    } else {
+      return this > min && this < max;
     }
-    return (this % other) == 0;
+  }
+}
+
+/// Extension on `BigInt` to support isInRange
+extension BigIntIsInRangeExtension on BigInt {
+  /// Checks if the BigInt value is within the specified range.
+  ///
+  /// Determines if `this` BigInt is between [min] and [max].
+  ///
+  /// - If [inclusive] is `true`, the range is inclusive,
+  ///   meaning the method returns `true` if the value is equal to [min] or [max].
+  /// - If [inclusive] is `false`, the range is exclusive,
+  ///   meaning the method returns `true` only if the value is strictly between [min] and [max].
+  ///
+  /// Parameters:
+  /// - [min]: The lower bound of the range.
+  /// - [max]: The upper bound of the range.
+  /// - [inclusive]: A boolean indicating whether the range is inclusive. Defaults to `true`.
+  ///
+  /// Returns:
+  /// - `true` if the BigInt is within the specified range, according to the [inclusive] flag.
+  /// - `false` otherwise.
+  bool isInRange(BigInt min, BigInt max, {bool inclusive = true}) {
+    assert (min <= max);
+    if (inclusive) {
+      return this >= min && this <= max;
+    } else {
+      return this > min && this < max;
+    }
+  }
+}
+
+/// Extension on `double` to support isInRange
+extension DoubleIsInRangeExtension on double {
+  /// Checks if the double value is within the specified range.
+  ///
+  /// Determines if `this` double is between [min] and [max].
+  ///
+  /// - If [inclusive] is `true`, the range is inclusive,
+  ///   meaning the method returns `true` if the value is equal to [min] or [max].
+  /// - If [inclusive] is `false`, the range is exclusive,
+  ///   meaning the method returns `true` only if the value is strictly between [min] and [max].
+  ///
+  /// Parameters:
+  /// - [min]: The lower bound of the range.
+  /// - [max]: The upper bound of the range.
+  /// - [inclusive]: A boolean indicating whether the range is inclusive. Defaults to `true`.
+  ///
+  /// Returns:
+  /// - `true` if the double is within the specified range, according to the [inclusive] flag.
+  /// - `false` otherwise.
+  bool isInRange(double min, double max, {bool inclusive = true}) {
+    assert (min <= max);
+    if (inclusive) {
+      return this >= min && this <= max;
+    } else {
+      return this > min && this < max;
+    }
+  }
+}
+
+/// Extension on `Rational` to support isInRange
+extension RationalIsInRangeExtension on Rational {
+  /// Checks if the Rational value is within the specified range.
+  ///
+  /// Determines if `this` Rational is between [min] and [max].
+  ///
+  /// - If [inclusive] is `true`, the range is inclusive,
+  ///   meaning the method returns `true` if the value is equal to [min] or [max].
+  /// - If [inclusive] is `false`, the range is exclusive,
+  ///   meaning the method returns `true` only if the value is strictly between [min] and [max].
+  ///
+  /// Parameters:
+  /// - [min]: The lower bound of the range.
+  /// - [max]: The upper bound of the range.
+  /// - [inclusive]: A boolean indicating whether the range is inclusive. Defaults to `true`.
+  ///
+  /// Returns:
+  /// - `true` if the Rational is within the specified range, according to the [inclusive] flag.
+  /// - `false` otherwise.
+  bool isInRange(Rational min, Rational max, {bool inclusive = true}) {
+    assert (min <= max);
+    if (inclusive) {
+      return this >= min && this <= max;
+    } else {
+      return this > min && this < max;
+    }
+  }
+}
+
+extension IntToleranceExtension on int {
+  /// Checks if this integer is within a fixed [tolerance] of the [target] value.
+  ///
+  /// Formula: `(this - target).abs() <= tolerance`.
+  /// Assumes [tolerance] is a non-negative integer.
+  bool isWithinTolerance(int target, int tolerance) {
+    assert(tolerance >= 0, 'Tolerance cannot be negative');
+    return (this - target).abs() <= tolerance;
+  }
+}
+
+extension BigIntToleranceExtension on BigInt {
+  /// Checks if this BigInt is within a fixed [tolerance] of the [target] value.
+  ///
+  /// Formula: `(this - target).abs() <= tolerance`.
+  /// Assumes [tolerance] is a non-negative BigInt.
+  bool isWithinTolerance(BigInt target, BigInt tolerance) {
+    assert(!tolerance.isNegative, 'Tolerance cannot be negative');
+    return (this - target).abs() <= tolerance;
+  }
+}
+
+extension DoubleToleranceExtension on double {
+  /// Checks if this double is within a fixed [tolerance] of the [target] value.
+  ///
+  /// Formula: `(this - target).abs() <= tolerance`.
+  /// Assumes [tolerance] is non-negative.
+  bool isWithinTolerance(double target, double tolerance) {
+    assert(tolerance >= 0, 'Tolerance cannot be negative');
+    return (this - target).abs() <= tolerance;
+  }
+
+  /// Checks if this double is close to the [other] double, considering
+  /// floating-point inaccuracies.
+  ///
+  /// Uses the formula recommended for robust floating-point comparison:
+  /// `(this - other).abs() <= max(relativeTolerance * max(this.abs(), other.abs()), absoluteTolerance)`
+  ///
+  /// - [relativeTolerance]: Allowed difference relative to the magnitude of the numbers.
+  /// - [absoluteTolerance]: Minimum allowed absolute difference, important for comparisons near zero.
+  /// Assumes tolerances are non-negative.
+  bool isCloseTo(
+      double other, {
+        double relativeTolerance = 1e-9,    // Default from Python's math.isclose
+        double absoluteTolerance = 1e-12,   // Differs from Python's math.isclose (which is 0.0)
+      }) {
+    assert(relativeTolerance >= 0, 'Relative tolerance cannot be negative');
+    assert(absoluteTolerance >= 0, 'Absolute tolerance cannot be negative');
+    if (this == other) {
+      return true; // Shortcut for identical values, handles infinities
+    }
+    if ((this - other).isInfinite) {
+      return false; // Opposite infinities are not close
+    }
+    return (this - other).abs() <=
+        math.max(relativeTolerance * math.max(this.abs(), other.abs()), absoluteTolerance);
+  }
+}
+
+extension RationalToleranceExtension on Rational {
+  /// Checks if this Rational is within a fixed [tolerance] of the [target] value.
+  ///
+  /// Formula: `(this - target).abs() <= tolerance`.
+  /// Assumes [tolerance] is a non-negative Rational.
+  bool isWithinTolerance(Rational target, Rational tolerance) {
+    // assert(!tolerance.isNegative, 'Tolerance cannot be negative');
+    return (this - target).abs() <= tolerance;
   }
 }
