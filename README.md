@@ -131,6 +131,11 @@ For more detailed examples, please refer to the example/ directory in the reposi
 
 To run the examples, navigate to the `example/` directory and follow the instructions in its `README.md`.
 
+## API stability
+As numeric_utils is still in its infancy, we may introduce breaking changes to the API at any time without notice. 
+We will attempt to keep backward compatibility as much as possible. Once we have a stable 1.0.0 version, breaking 
+changes will require a version bump.
+
 ## Contributing
 
 We welcome contributions to the `numeric_utils` library!  Whether you're fixing a bug, adding a new feature, improving documentation, or suggesting ideas, your help is appreciated.
@@ -189,14 +194,18 @@ We believe in keeping things straightforward and positive.  Our Code of Conduct 
 
 **Be excellent to one another.**
 
-We aim to foster a friendly and welcoming space for everyone who wants to contribute.  We trust that all participants will naturally embrace this principle in their interactions within the project.
+We aim to foster a friendly and welcoming space for everyone who wants to contribute.  We trust that all participants 
+will naturally embrace this principle in their interactions within the project.
 
 ### Questions and Discussions
 
-If you have questions, want to discuss features, or need help, please [open an issue](https://github.com/fredspizza/numeric_utils/issues) or start a discussion in the [Discussions](https://github.com/fredspizza/numeric_utils/discussions) section of the repository.
+If you have questions, want to discuss features, or need help, please [open an issue](https://github.com/fredspizza/numeric_utils/issues) or start a discussion 
+in the [Discussions](https://github.com/fredspizza/numeric_utils/discussions) section of the repository.
 
 Thank you for your contributions!
 
 ## License
 
-`numeric_utils` is open-source software licensed under the [MIT License](LICENSE).  You are free to use, modify, and distribute it according to the terms of the license. Please refer to the [LICENSE](LICENSE) file for the complete license text.
+`numeric_utils` is open-source software licensed under the [MIT License](LICENSE).  You are free to use, modify, and 
+distribute it according to the terms of the license. Please refer to the [LICENSE](LICENSE) file for the complete 
+license text.

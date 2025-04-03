@@ -18,12 +18,17 @@ void main() {
   print('Rounded 1.5: $rounded'); // Output: Rounded 1.5: 2
 
   // Formatting
-  final formatted = rational1.toPercentage(2);
-  print('Percentage: $formatted'); // Output: Percentage: 75.00%
+  final formattedNoMin = rational1.toPercentage(2);
+  print('Percentage: $formattedNoMin'); // Output: Percentage: 75%
+
+  // Formatting
+  final formattedWithMin = rational1.toPercentage(2, minDecimals: 2);
+  print('Percentage: $formattedWithMin'); // Output: Percentage: 75.00%
 
   // Currency formatting
   final price = Rational.parse('19.99');
   print('Price: ${price.toCurrency(locale: 'en_US')}'); // Output: Price: $19.99
+  print('Price: ${price.toCurrency(locale: 'fr_FR')}'); // Output: Price: 19,99 €
 
   // BigInt rounded division
   final bigIntResult = BigInt.from(10).roundedDiv(BigInt.from(3), RoundingMode.ceil);

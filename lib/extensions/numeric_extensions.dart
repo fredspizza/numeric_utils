@@ -361,6 +361,73 @@ extension RationalFormattingExtension on Rational {
     }
   }
 
+  /// Formats the rational number as a percentage string, with a specified number of decimal places,
+  /// applying the given rounding mode.
+  ///
+  /// Allows formatting percentages where the input is either a ratio value (e.g., 0.33)
+  /// or already a value between 0 and 100 (e.g., 33).
+  ///
+  /// Example (assuming `asRatio` is true - default):
+  /// ```dart
+  /// import 'package:numeric_utils/numeric_extensions.dart';
+  /// import 'package:rational/rational.dart';
+  ///
+  /// final rationalUnit = Rational.fromInt(1, 3);
+  /// print(rationalUnit.toPercentage(2));                          // Output: 33.33%
+  /// print(rationalUnit.toPercentage(2, mode: RoundingMode.ceil)); // Output: 33.34%
+  /// print(rationalUnit.toPercentage(0));                          // Output: 33%
+  /// print(rationalUnit.toPercentage(2, locale: 'fr_FR'));         // Output: 33,33%
+  /// ```
+  ///
+  /// Example (when `asRatio` is false):
+  /// ```dart
+  /// final rationalPercentage = Rational.fromInt(66, 2);                           // Represents 33
+  /// print(rationalPercentage.toPercentage(2, asRatio: false));                    // Output: 33%
+  /// print(rationalPercentage.toPercentage(2, asRatio: false, forcePlaces: true)); // Output: 33.00%
+  /// ```
+  ///
+  /// Parameters:
+  ///   - `maxDecimals`: The maximum number of decimal places to include in the formatted percentage string
+  ///   - `minDecimals`: The minimum number of decimal places to include in the formatted percentage string. Defaults to `0`
+  ///   - `mode`: The rounding mode to apply when truncating or rounding the number. Defaults to [RoundingMode.halfUp].
+  ///   - `locale`: The locale to use for formatting the number. Defaults to the system's default locale.
+  ///   - `asRatio`: A boolean indicating whether the rational number should be treated as a ratio (between 0 and 1) and multiplied by 100 before formatting. Defaults to `true`.
+  ///
+  /// Returns:
+  ///   A localized percentage string representation of the rational number with the specified decimal places and rounding.
+  ///
+  /// Throws:
+  ///   - `ArgumentError`: If `places` is negative.
+  String toPercentage(
+    int maxDecimals, {
+    int minDecimals = 0,
+    RoundingMode mode = RoundingMode.halfUp,
+    String? locale,
+    bool asRatio = true,
+  }) {
+    if (maxDecimals < 0 || minDecimals < 0) {
+      throw ArgumentError('The number of decimals must be non-negative.');
+    }
+
+    if (maxDecimals < minDecimals) {
+      throw ArgumentError('maxDecimals must be greater than or equal to minDecimals.');
+    }
+
+    Rational valueToFormat = this;
+    if (asRatio) {
+      valueToFormat *= Rational.fromInt(100);
+    }
+
+    final scale = Rational(BigInt.from(10).pow(maxDecimals));
+    final scaled = (valueToFormat * scale).rounded(mode);
+    final result = scaled / scale;
+
+    final numberFormat = NumberFormat.decimalPattern(locale);
+    numberFormat.minimumFractionDigits = minDecimals;
+    numberFormat.maximumFractionDigits = maxDecimals;
+    return '${numberFormat.format(result.toDouble())}%';
+  }
+
   /// Formats the rational number as a localized currency string
   ///
   /// Example:
@@ -405,66 +472,6 @@ extension RationalFormattingExtension on Rational {
     } catch (e) {
       throw ArgumentError('Invalid Locale');
     }
-  }
-
-  /// Formats the rational number as a percentage string, with a specified number of decimal places,
-  /// applying the given rounding mode.
-  ///
-  /// Allows formatting percentages where the input is either a ratio value (e.g., 0.33)
-  /// or already a value between 0 and 100 (e.g., 33).
-  ///
-  /// Example (assuming `asRatio` is true - default):
-  /// ```dart
-  /// import 'package:numeric_utils/numeric_extensions.dart';
-  /// import 'package:rational/rational.dart';
-  ///
-  /// final rationalUnit = Rational.fromInt(1, 3);
-  /// print(rationalUnit.toPercentage(2));                          // Output: 33.33%
-  /// print(rationalUnit.toPercentage(2, mode: RoundingMode.ceil)); // Output: 33.34%
-  /// print(rationalUnit.toPercentage(0));                          // Output: 33%
-  /// print(rationalUnit.toPercentage(2, locale: 'fr_FR'));         // Output: 33,33%
-  /// ```
-  ///
-  /// Example (when `asRatio` is false):
-  /// ```dart
-  /// final rationalPercentage = Rational.fromInt(66, 2); // Represents 33
-  /// print(rationalPercentage.toPercentage(2, asRatio: false));     // Output: 33.00%
-  /// ```
-  ///
-  /// Parameters:
-  ///   - `places`: The number of decimal places to include in the formatted percentage string.
-  ///   - `mode`: The rounding mode to apply when truncating or rounding the number. Defaults to [RoundingMode.halfUp].
-  ///   - `locale`: The locale to use for formatting the number. Defaults to the system's default locale.
-  ///   - `asRatio`: A boolean indicating whether the rational number should be treated as a ratio (between 0 and 1) and multiplied by 100 before formatting. Defaults to `true`.
-  ///
-  /// Returns:
-  ///   A localized percentage string representation of the rational number with the specified decimal places and rounding.
-  ///
-  /// Throws:
-  ///   - `ArgumentError`: If `places` is negative.
-  String toPercentage(
-      int places, {
-        RoundingMode mode = RoundingMode.halfUp,
-        String? locale,
-        bool asRatio = true,
-      }) {
-    if (places < 0) {
-      throw ArgumentError('The number of places must be non-negative.');
-    }
-
-    Rational valueToFormat = this;
-    if (asRatio) {
-      valueToFormat *= Rational.fromInt(100);
-    }
-
-    final scale = Rational(BigInt.from(10).pow(places));
-    final scaled = (valueToFormat * scale).rounded(mode);
-    final result = scaled / scale;
-
-    final numberFormat = NumberFormat.decimalPattern(locale);
-    numberFormat.minimumFractionDigits = places;
-    numberFormat.maximumFractionDigits = places;
-    return '${numberFormat.format(result.toDouble())}%';
   }
 }
 
@@ -623,6 +630,7 @@ extension BigIntMultipleOfExtension on BigInt {
   bool isMultipleOf(BigInt other) => other == BigInt.zero ? this == BigInt.zero : this % other == BigInt.zero;
 }
 
+/// Extension on `double` to support isMultipleOf
 extension DoubleMultipleOfExtension on double {
   /// Returns true if this double is a multiple of [other]
   ///
@@ -666,7 +674,7 @@ extension IntIsInRangeExtension on int {
   /// - `true` if the int is within the specified range, according to the [inclusive] flag.
   /// - `false` otherwise.
   bool isInRange(int min, int max, {bool inclusive = true}) {
-    assert (min <= max);
+    assert(min <= max);
     if (inclusive) {
       return this >= min && this <= max;
     } else {
@@ -695,7 +703,7 @@ extension BigIntIsInRangeExtension on BigInt {
   /// - `true` if the BigInt is within the specified range, according to the [inclusive] flag.
   /// - `false` otherwise.
   bool isInRange(BigInt min, BigInt max, {bool inclusive = true}) {
-    assert (min <= max);
+    assert(min <= max);
     if (inclusive) {
       return this >= min && this <= max;
     } else {
@@ -724,7 +732,7 @@ extension DoubleIsInRangeExtension on double {
   /// - `true` if the double is within the specified range, according to the [inclusive] flag.
   /// - `false` otherwise.
   bool isInRange(double min, double max, {bool inclusive = true}) {
-    assert (min <= max);
+    assert(min <= max);
     if (inclusive) {
       return this >= min && this <= max;
     } else {
@@ -753,7 +761,7 @@ extension RationalIsInRangeExtension on Rational {
   /// - `true` if the Rational is within the specified range, according to the [inclusive] flag.
   /// - `false` otherwise.
   bool isInRange(Rational min, Rational max, {bool inclusive = true}) {
-    assert (min <= max);
+    assert(min <= max);
     if (inclusive) {
       return this >= min && this <= max;
     } else {
@@ -762,6 +770,7 @@ extension RationalIsInRangeExtension on Rational {
   }
 }
 
+/// Extension on `int` to support isWithinTolerance
 extension IntToleranceExtension on int {
   /// Checks if this integer is within a fixed [tolerance] of the [target] value.
   ///
@@ -773,6 +782,7 @@ extension IntToleranceExtension on int {
   }
 }
 
+/// Extension on `BigInt` to support isWithinTolerance
 extension BigIntToleranceExtension on BigInt {
   /// Checks if this BigInt is within a fixed [tolerance] of the [target] value.
   ///
@@ -784,6 +794,7 @@ extension BigIntToleranceExtension on BigInt {
   }
 }
 
+/// Extension on `double` to support isWithinTolerance and isCloseTo
 extension DoubleToleranceExtension on double {
   /// Checks if this double is within a fixed [tolerance] of the [target] value.
   ///
@@ -804,10 +815,10 @@ extension DoubleToleranceExtension on double {
   /// - [absoluteTolerance]: Minimum allowed absolute difference, important for comparisons near zero.
   /// Assumes tolerances are non-negative.
   bool isCloseTo(
-      double other, {
-        double relativeTolerance = 1e-9,    // Default from Python's math.isclose
-        double absoluteTolerance = 1e-12,   // Differs from Python's math.isclose (which is 0.0)
-      }) {
+    double other, {
+    double relativeTolerance = 1e-9, // Default from Python's math.isclose
+    double absoluteTolerance = 1e-12, // Differs from Python's math.isclose (which is 0.0)
+  }) {
     assert(relativeTolerance >= 0, 'Relative tolerance cannot be negative');
     assert(absoluteTolerance >= 0, 'Absolute tolerance cannot be negative');
     if (this == other) {
@@ -816,18 +827,18 @@ extension DoubleToleranceExtension on double {
     if ((this - other).isInfinite) {
       return false; // Opposite infinities are not close
     }
-    return (this - other).abs() <=
-        math.max(relativeTolerance * math.max(this.abs(), other.abs()), absoluteTolerance);
+    return (this - other).abs() <= math.max(relativeTolerance * math.max(this.abs(), other.abs()), absoluteTolerance);
   }
 }
 
+/// Extension on `Rational` to support isWithinTolerance
 extension RationalToleranceExtension on Rational {
   /// Checks if this Rational is within a fixed [tolerance] of the [target] value.
   ///
   /// Formula: `(this - target).abs() <= tolerance`.
   /// Assumes [tolerance] is a non-negative Rational.
   bool isWithinTolerance(Rational target, Rational tolerance) {
-    // assert(!tolerance.isNegative, 'Tolerance cannot be negative');
+    assert(tolerance >= Rational.zero, 'Tolerance cannot be negative');
     return (this - target).abs() <= tolerance;
   }
 }

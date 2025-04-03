@@ -338,6 +338,8 @@ void main() {
       expect(Rational.fromInt(1, 3).toPercentage(0), '33%');
       expect(Rational.fromInt(1, 3).toPercentage(2, mode: RoundingMode.ceil), '33.34%');
       expect(Rational.fromInt(1, 3).toPercentage(2, locale: 'fr_FR'), '33,33%');
+      expect(Rational.fromInt(3, 10).toPercentage(2), '30%');
+      expect(Rational.fromInt(3, 10).toPercentage(2, minDecimals: 2), '30.00%');
     });
   });
 
