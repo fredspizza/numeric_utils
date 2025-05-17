@@ -1,3 +1,9 @@
+### [0.3.1] - 2025-05-17
+
+#### Modified
+
+- `RationalParsing.tryFromString` now handles `null` inputs and returns `null` instead of throwing an exception.
+
 ### [0.3.0] - 2025-04-02
 
 #### Breaking change

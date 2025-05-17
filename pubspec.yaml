@@ -1,6 +1,6 @@
 name: numeric_utils
 description: Provides extensions and utility functions for working with numeric types in Dart, including Rational and BigInt.
-version: 0.3.0
+version: 0.3.1
 repository: https://github.com/fredspizza/numeric_utils
 
 environment:

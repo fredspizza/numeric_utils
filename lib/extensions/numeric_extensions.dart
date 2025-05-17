@@ -550,17 +550,23 @@ class RationalParsing {
   /// Attempts to parse a string into a [Rational] object.
   ///
   /// This method uses [fromString] to parse the input string. If parsing fails,
-  /// it returns `null` instead of throwing an exception.
+  /// or if the input string is `null`, it returns `null` instead of
+  /// throwing an exception.
   ///
   /// Example:
   /// ```dart
   /// print(RationalParsing.tryFromString("1 3/4"));   // Outputs: 7/4
   /// print(RationalParsing.tryFromString("invalid")); // Outputs: null
+  /// print(RationalParsing.tryFromString(null));      // Outputs: null
   /// ```
   ///
-  /// - [value]: The string to attempt to parse into a [Rational].
-  /// - Returns: A [Rational] object if parsing is successful, or `null` if parsing fails.
-  static Rational? tryFromString(String value) {
+  /// - [value]: The string to attempt to parse into a [Rational]. Can be `null`.
+  /// - Returns: A [Rational] object if parsing is successful, or `null` if
+  ///            parsing fails or the input is `null`.
+  static Rational? tryFromString(String? value) {
+    if (value == null) {
+      return null;
+    }
     try {
       return fromString(value);
     } catch (e) {
