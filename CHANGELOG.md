@@ -1,4 +1,21 @@
-### [0.4.0] - TBD
+### [0.4.1] - 2025-11-15
+
+#### Added
+
+- **Package entrypoint**: Added `lib/numeric_utils.dart` as the main library file that exports all public APIs
+- **Test coverage**: Added comprehensive tests for `RationalParsing.tryFromString` covering success, failure, and null input cases
+
+#### Fixed
+
+- Removed arbitrary `RoundingMode.halfEven` restriction from `toNearest()` - now supports all rounding modes
+- Fixed incorrect `mode` parameter documentation in `toCurrency()` (parameter was never implemented)
+- Added precision notes to all formatting methods (`toDecimal`, `toPercentage`, `toCurrency`) explaining double conversion behavior
+
+#### Documentation
+
+- Updated README with `tryFromString` usage examples alongside `fromString`
+
+### [0.4.0] - 2025-11-15
 
 #### Breaking Changes
 

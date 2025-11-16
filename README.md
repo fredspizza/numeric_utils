@@ -102,6 +102,7 @@ import 'package:numeric_utils/numeric_utils.dart';
 import 'package:rational/rational.dart';
 
 void main() {
+  // fromString - throws FormatException on invalid input
   final mixedNumber = RationalParsing.fromString(" 1 3/4 ");
   print('Mixed number: $mixedNumber'); // Outputs: 7/4
 
@@ -110,13 +111,20 @@ void main() {
 
   final decimal = RationalParsing.fromString("0.75");
   print('Decimal: $decimal'); // Outputs: 3/4
-  
+
   // Round-trip support for toString()
   final roundTrip = RationalParsing.fromString(Rational.parse("0.75").toString());
   print('Round trip: $roundTrip'); // Outputs: 3/4
 
-  // This causes a FormatException - Rational cannot parse its own output
-  Rational.parse(Rational.parse("0.75").toString());
+  // tryFromString - returns null on invalid input instead of throwing
+  final valid = RationalParsing.tryFromString("3/4");
+  print('Valid: $valid'); // Outputs: 3/4
+
+  final invalid = RationalParsing.tryFromString("invalid");
+  print('Invalid: $invalid'); // Outputs: null
+
+  final nullInput = RationalParsing.tryFromString(null);
+  print('Null input: $nullInput'); // Outputs: null
 }
 ```
 

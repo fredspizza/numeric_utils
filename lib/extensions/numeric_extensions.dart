@@ -207,9 +207,9 @@ extension RationalRoundingExtension on Rational {
   /// - `up`:       Rounds away from zero, increasing the magnitude of the number
   /// - `halfUp`:   Rounds to the nearest multiple, rounding up on ties
   /// - `halfDown`: Rounds to the nearest multiple, rounding down on ties
-  /// - `halfEven`: Not supported —  Ambiguous for fractional increments.  'Half-even' rounding is not meaningfully defined for rounding to the nearest multiple of a fraction.
+  /// - `halfEven`: Rounds to the nearest multiple, choosing the even multiple on ties (banker's rounding)
   ///
-  /// If [minIncrement] is zero or [mode] is `halfEven`, an [ArgumentError] is thrown
+  /// If [minIncrement] is zero, an [ArgumentError] is thrown
   ///
   /// Example:
   /// ```dart
@@ -223,17 +223,13 @@ extension RationalRoundingExtension on Rational {
   /// print(Rational.parse("-7.26").toNearest(increment, mode: RoundingMode.up));       // -7.26 --> -7.5
   /// print(Rational.parse("7.375").toNearest(increment, mode: RoundingMode.halfUp));   // 7.375 --> 7.5
   /// print(Rational.parse("7.375").toNearest(increment, mode: RoundingMode.halfDown)); // 7.375 --> 7.25
-  /// print(Rational.parse("7.50").toNearest(increment, mode: RoundingMode.halfEven));  // Throws ArgumentError
+  /// print(Rational.parse("7.50").toNearest(increment, mode: RoundingMode.halfEven));  // 7.50 --> 7.5 (even multiple)
   /// ```
   /// Throws:
-  ///   - `ArgumentError`: If [minIncrement] is zero or if [mode] is [RoundingMode.halfEven]
+  ///   - `ArgumentError`: If [minIncrement] is zero
   Rational toNearest(Rational minIncrement, {RoundingMode mode = RoundingMode.halfUp}) {
     if (minIncrement == Rational.zero) {
       throw ArgumentError('minIncrement cannot be zero');
-    }
-
-    if (mode == RoundingMode.halfEven) {
-      throw ArgumentError('halfEven is not supported for fractional rounding');
     }
 
     final Rational scaled = this / minIncrement;
@@ -318,6 +314,10 @@ extension RationalFormattingExtension on Rational {
   /// Formats the rational number as a localized decimal string with a specified number of decimal places,
   /// applying the given rounding mode
   ///
+  /// Note: This method converts the Rational to double for formatting via the intl package.
+  /// For values requiring more than ~15 significant digits, precision may be lost in display.
+  /// The Rational value itself remains exact; only the formatted output is affected.
+  ///
   /// Example:
   /// ```dart
   /// import 'package:numeric_utils/extensions/numeric_extensions.dart';
@@ -387,6 +387,10 @@ extension RationalFormattingExtension on Rational {
   /// Formats the rational number as a percentage string, with a specified number of decimal places,
   /// applying the given rounding mode.
   ///
+  /// Note: This method converts the Rational to double for formatting via the intl package.
+  /// For values requiring more than ~15 significant digits, precision may be lost in display.
+  /// The Rational value itself remains exact; only the formatted output is affected.
+  ///
   /// Allows formatting percentages where the input is either a ratio value (e.g., 0.33)
   /// or already a value between 0 and 100 (e.g., 33).
   ///
@@ -453,6 +457,10 @@ extension RationalFormattingExtension on Rational {
 
   /// Formats the rational number as a localized currency string
   ///
+  /// Note: This method converts the Rational to double for formatting via the intl package.
+  /// For values requiring more than ~15 significant digits, precision may be lost in display.
+  /// The Rational value itself remains exact; only the formatted output is affected.
+  ///
   /// Example:
   /// ```dart
   /// import 'package:numeric_utils/extensions/numeric_extensions.dart';
@@ -466,13 +474,12 @@ extension RationalFormattingExtension on Rational {
   /// ```
   ///
   /// Parameters:
-  ///   - `mode`: The rounding mode to apply when rounding the number. Defaults to [RoundingMode.halfUp].
   ///   - `locale`: The locale to use for formatting the currency. Defaults to the system's default locale.
   ///   - `currencyName`: Optional currency name (e.g., 'USD', 'EUR') to use. If not provided, uses the locale's default currency.
   ///   - `decimalDigits`: Optional number of decimal digits. If not provided, uses the locale's default.
   ///
   /// Returns:
-  ///   A localized currency string representation of the rational number with the specified rounding.
+  ///   A localized currency string representation of the rational number.
   ///
   /// Throws:
   ///   - `FormatException`: If the number cannot be formatted.

@@ -132,9 +132,15 @@ void main() {
       expect(Rational.parse('-7.375').toNearest(increment, mode: RoundingMode.halfDown), Rational.parse('-7.25'));
     });
 
-    test('halfEven rounding (should throw error)', () {
-      expect(() => Rational.parse('7.50').toNearest(Rational.fromInt(1, 2), mode: RoundingMode.halfEven),
-          throwsA(isA<ArgumentError>()));
+    test('halfEven rounding', () {
+      // Half-even rounds to the nearest even multiple when exactly halfway
+      // 7.5 and 8.5 are already exact multiples of 0.5, so they stay unchanged
+      expect(Rational.parse('7.50').toNearest(Rational.fromInt(1, 2), mode: RoundingMode.halfEven), Rational.parse('7.5'));
+      expect(Rational.parse('8.50').toNearest(Rational.fromInt(1, 2), mode: RoundingMode.halfEven), Rational.parse('8.5'));
+      // 7.25 / 0.5 = 14.5, rounds to 14 (even), so 14 * 0.5 = 7.0
+      expect(Rational.parse('7.25').toNearest(Rational.fromInt(1, 2), mode: RoundingMode.halfEven), Rational.parse('7.0'));
+      // 7.75 / 0.5 = 15.5, rounds to 16 (even), so 16 * 0.5 = 8.0
+      expect(Rational.parse('7.75').toNearest(Rational.fromInt(1, 2), mode: RoundingMode.halfEven), Rational.parse('8.0'));
     });
 
     test('Exact multiples of minIncrement remain unchanged', () {
@@ -306,6 +312,34 @@ void main() {
       expect(RationalParsing.fromString('1 3/4'),      Rational.fromInt(7, 4));
       expect(RationalParsing.fromString('-1 3/4'),     Rational.fromInt(-7, 4));
       expect(RationalParsing.fromString('- 1 3 / 4 '), Rational.fromInt(-7, 4));
+    });
+
+    test('tryFromString - success cases', () {
+      // Valid decimal formats
+      expect(RationalParsing.tryFromString('.123'),       Rational.parse('.123'));
+      expect(RationalParsing.tryFromString('0.123'),      Rational.parse('0.123'));
+      expect(RationalParsing.tryFromString('12.34'),      Rational.parse('12.34'));
+      expect(RationalParsing.tryFromString('12.3e4'),     Rational.parse('12.3e4'));
+
+      // Valid fraction formats
+      expect(RationalParsing.tryFromString('3/4'),        Rational.fromInt(3, 4));
+      expect(RationalParsing.tryFromString(' 3 / 4 '),    Rational.fromInt(3, 4));
+      expect(RationalParsing.tryFromString('1 3/4'),      Rational.fromInt(7, 4));
+      expect(RationalParsing.tryFromString('-1 3/4'),     Rational.fromInt(-7, 4));
+    });
+
+    test('tryFromString - failure cases', () {
+      // Invalid formats should return null instead of throwing
+      expect(RationalParsing.tryFromString('invalid'), isNull);
+      expect(RationalParsing.tryFromString('1/0'), isNull);
+      expect(RationalParsing.tryFromString('abc/def'), isNull);
+      expect(RationalParsing.tryFromString('1 2 3/4'), isNull); // Too many parts
+      expect(RationalParsing.tryFromString(''), isNull);
+    });
+
+    test('tryFromString - null input', () {
+      // Null input should return null
+      expect(RationalParsing.tryFromString(null), isNull);
     });
   });
 
