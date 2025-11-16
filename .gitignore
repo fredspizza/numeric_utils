@@ -1,19 +1,19 @@
+# Hidden directories (user-specific, local settings)
+.*/
+
+# But allow git directory
+!.git/
+
 # Dart and Flutter related ignores
-.dart_tool/
 .packages
-.pub/
-.pub-cache/
 .pubspec.lock
 
 # IDE related ignores
-.idea/
 *.iml
 /shelf/
-.vscode/
 *.code-workspace
 *.swo
 *.swp
-.DS_Store # macOS system file
 
 # OS related ignores
 Thumbs.db
@@ -28,6 +28,7 @@ build/
 *.log
 *.tmp
 *.bak
+*~
 
 # Coverage reports
 coverage/
