@@ -131,9 +131,98 @@ For more detailed examples, please refer to the example/ directory in the reposi
 
 To run the examples, navigate to the `example/` directory and follow the instructions in its `README.md`.
 
+## Performance Notes
+
+**Rational vs. Double Performance:**
+- `Rational` operations provide exact arithmetic but are **slower than `double`** due to the underlying BigInt calculations
+- For high-performance numeric code where floating-point precision is acceptable, consider using `double` with `isCloseTo()` for comparisons
+- `Rational` is ideal for financial calculations, measurements, and applications where exact decimal representation is critical
+
+**Constants:**
+- All constants in this library are computed at **runtime** (not compile-time const) due to `Rational`'s constructor limitations
+- Constants are computed on first access and cached thereafter
+- This has minimal performance impact for typical usage patterns
+
+**Best Practices:**
+- Use `Rational` for money, percentages, and fractions where precision matters
+- Use `double` for scientific calculations, graphics, and performance-critical loops
+- Cache frequently-used Rational values rather than parsing strings repeatedly
+- Prefer `RationalParsing.tryFromString()` when dealing with user input to avoid exception overhead
+
+## Troubleshooting
+
+### Common Issues
+
+**`FormatException` when parsing fractions**
+- **Problem:** You're using `Rational.parse()` which doesn't support fractions like "3/4"
+- **Solution:** Use `RationalParsing.fromString()` instead, which supports fractions, mixed numbers, decimals, and scientific notation
+  ```dart
+  // ❌ This throws FormatException
+  Rational.parse("3/4");
+
+  // ✅ This works
+  RationalParsing.fromString("3/4");
+  ```
+
+**Currency formatting shows wrong symbol**
+- **Problem:** Invalid or incomplete locale string
+- **Solution:** Use full locale format: `'en_US'` not `'US'`, `'fr_FR'` not `'FR'`
+  ```dart
+  // ❌ Wrong
+  value.toCurrency(locale: 'US');
+
+  // ✅ Correct
+  value.toCurrency(locale: 'en_US');
+  ```
+
+**Method not found: `toDecimalPlace` or `toDecimalPlaces`**
+- **Problem:** Methods were renamed for clarity and consistency
+- **Solution:** Use `toNearestDecimal()` for rounding (returns Rational) or `toDecimal()` for formatting (returns String)
+  ```dart
+  // ❌ Old (pre-0.4.0) - for rounding
+  value.toDecimalPlace(2);  // Returns Rational
+
+  // ✅ New (0.4.0+) - for rounding
+  value.toNearestDecimal(2);  // Returns Rational
+
+  // ✅ New (0.4.0+) - for formatting
+  value.toDecimal(2, locale: 'en_US');  // Returns String "1.23"
+  ```
+
+## Migration Guide
+
+### Migrating to v0.4.0+ (Current Development)
+
+**Breaking Changes:** Methods renamed for clarity and consistency with naming patterns
+- **Rounding method:**
+  - **Old:** `toDecimalPlace(int places)` - returned Rational
+  - **New:** `toNearestDecimal(int decimalPlaces)` - returns Rational
+  - **Action:** Rename to `toNearestDecimal` to match `toNearestHalf()`, `toNearestThird()`, etc.
+
+- **Formatting method:**
+  - **Old:** `toDecimalPlaces(int places)` - returned String
+  - **New:** `toDecimal(int decimalPlaces)` - returns String
+  - **Action:** Rename to `toDecimal` to match `toPercentage()` and `toCurrency()`
+
+**New Features:**
+- `isMultipleOf()` now throws `ArgumentError` when checking against zero (previously returned boolean)
+- Added `RationalPercentageExtension` with `percentageOf()`, `percentChangeOn()`, and `percentDifferenceFrom()`
+- New constants: `twoFifths`, `threeFifths`, `fourFifths`, `onePercent`, `fivePercent`, `tenPercent`, `twentyFivePercent`, `fiftyPercent`
+
+### Migrating to v0.3.0
+
+**Breaking Change:** `toPercentage` API changed
+- **Old:** `value.toPercentage(2, forcePlaces: true)`
+- **New:** `value.toPercentage(2, minDecimals: 2)`
+- **Action:** Replace `forcePlaces` parameter with `minDecimals`
+
+**New Feature:** `tryFromString` now accepts null
+- Previously threw on null input
+- Now returns `null` for null inputs (added in v0.3.1)
+
 ## API stability
-As numeric_utils is still in its infancy, we may introduce breaking changes to the API at any time without notice. 
-We will attempt to keep backward compatibility as much as possible. Once we have a stable 1.0.0 version, breaking 
+As numeric_utils is still in its infancy, we may introduce breaking changes to the API at any time without notice.
+We will attempt to keep backward compatibility as much as possible. Once we have a stable 1.0.0 version, breaking
 changes will require a version bump.
 
 ## Contributing

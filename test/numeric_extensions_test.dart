@@ -250,12 +250,12 @@ void main() {
   });
 
   group('RationalCommonRoundingExtension', () {
-    test('toDecimalPlace', () {
-      expect(Rational.parse('1.2345').toDecimalPlace(2), Rational.parse('1.23'));
-      expect(Rational.parse('1.2345').toDecimalPlace(3), Rational.parse('1.235'));
-      expect(Rational.parse('1.2345').toDecimalPlace(0), Rational.parse('1'));
-      expect(Rational.parse('1.2345').toDecimalPlace(2, mode: RoundingMode.ceil), Rational.parse('1.24'));
-      expect(() => Rational.parse('1.2345').toDecimalPlace(-1), throwsA(isA<ArgumentError>()));
+    test('toNearestDecimal', () {
+      expect(Rational.parse('1.2345').toNearestDecimal(2), Rational.parse('1.23'));
+      expect(Rational.parse('1.2345').toNearestDecimal(3), Rational.parse('1.235'));
+      expect(Rational.parse('1.2345').toNearestDecimal(0), Rational.parse('1'));
+      expect(Rational.parse('1.2345').toNearestDecimal(2, mode: RoundingMode.ceil), Rational.parse('1.24'));
+      expect(() => Rational.parse('1.2345').toNearestDecimal(-1), throwsA(isA<ArgumentError>()));
     });
 
     test('toCents', () {
@@ -347,8 +347,7 @@ void main() {
     test('isMultipleOf', () {
       expect(BigInt.from(10).isMultipleOf(BigInt.from(5)), true);
       expect(BigInt.from(11).isMultipleOf(BigInt.from(5)), false);
-      expect(BigInt.from(10).isMultipleOf(BigInt.zero), false);
-      expect(BigInt.zero.isMultipleOf(BigInt.zero), true);
+      expect(BigInt.zero.isMultipleOf(BigInt.from(5)), true);
     });
   });
 
@@ -356,8 +355,7 @@ void main() {
     test('isMultipleOf', () {
       expect(10.isMultipleOf(5), true);
       expect(11.isMultipleOf(5), false);
-      expect(10.isMultipleOf(0), false);
-      expect(0.isMultipleOf(0), true);
+      expect(0.isMultipleOf(5), true);
     });
   });
 
@@ -365,8 +363,7 @@ void main() {
     test('isMultipleOf', () {
       expect(10.0.isMultipleOf(5.0), true);
       expect(11.0.isMultipleOf(5.0), false);
-      expect(10.0.isMultipleOf(0.0), false);
-      expect(0.0.isMultipleOf(0.0), true);
+      expect(0.0.isMultipleOf(5.0), true);
     });
   });
 
@@ -374,8 +371,7 @@ void main() {
     test('isMultipleOf', () {
       expect(RationalConstants.ten.isMultipleOf(RationalConstants.five), true);
       expect(RationalConstants.eleven.isMultipleOf(RationalConstants.five), false);
-      expect(RationalConstants.ten.isMultipleOf(Rational.zero), false);
-      expect(Rational.zero.isMultipleOf(Rational.zero), true);
+      expect(Rational.zero.isMultipleOf(RationalConstants.five), true);
       expect(RationalConstants.quarter.isMultipleOf(RationalConstants.quarter), true);
       expect(RationalConstants.quarter.isMultipleOf(RationalConstants.eighth), true);
       expect(RationalConstants.eighth.isMultipleOf(RationalConstants.quarter), false);
@@ -490,6 +486,76 @@ void main() {
     test('isCloseTo default tolerances', () {
       expect((1.0 + 1e-10).isCloseTo(1.0), true);
       expect((1.0 + 1e-8).isCloseTo(1.0), false);
+    });
+  });
+
+  group('Percentage Extensions', () {
+    test('percentageOf', () {
+      expect(Rational.parse('25').percentageOf(Rational.parse('100')), Rational.fromInt(1, 4));
+      expect(Rational.parse('30').percentageOf(Rational.parse('120')), Rational.fromInt(1, 4));
+      expect(Rational.parse('150').percentageOf(Rational.parse('100')), Rational.parse('1.5'));
+      expect(Rational.zero.percentageOf(Rational.parse('100')), Rational.zero);
+    });
+
+    test('percentageOf throws on zero', () {
+      expect(() => Rational.parse('25').percentageOf(Rational.zero), throwsArgumentError);
+    });
+
+    test('percentChangeOn', () {
+      expect(Rational.parse('10').percentChangeOn(Rational.parse('100')), Rational.parse('110'));
+      expect(Rational.parse('25').percentChangeOn(Rational.parse('80')), Rational.parse('100'));
+      expect(Rational.parse('-20').percentChangeOn(Rational.parse('100')), Rational.parse('80'));
+      expect(Rational.parse('50').percentChangeOn(Rational.parse('200')), Rational.parse('300'));
+    });
+
+    test('percentDifferenceFrom', () {
+      expect(Rational.parse('110').percentDifferenceFrom(Rational.parse('100')), Rational.fromInt(1, 10));
+      expect(Rational.parse('90').percentDifferenceFrom(Rational.parse('100')), Rational.fromInt(-1, 10));
+      expect(Rational.parse('150').percentDifferenceFrom(Rational.parse('100')), Rational.fromInt(1, 2));
+      expect(Rational.parse('100').percentDifferenceFrom(Rational.parse('100')), Rational.zero);
+    });
+
+    test('percentDifferenceFrom throws on zero', () {
+      expect(() => Rational.parse('110').percentDifferenceFrom(Rational.zero), throwsArgumentError);
+    });
+  });
+
+
+  group('isMultipleOf with zero', () {
+    test('int.isMultipleOf throws on zero', () {
+      expect(() => 5.isMultipleOf(0), throwsArgumentError);
+      expect(() => 0.isMultipleOf(0), throwsArgumentError);
+    });
+
+    test('BigInt.isMultipleOf throws on zero', () {
+      expect(() => BigInt.from(5).isMultipleOf(BigInt.zero), throwsArgumentError);
+      expect(() => BigInt.zero.isMultipleOf(BigInt.zero), throwsArgumentError);
+    });
+
+    test('double.isMultipleOf throws on zero', () {
+      expect(() => 5.0.isMultipleOf(0.0), throwsArgumentError);
+      expect(() => 0.0.isMultipleOf(0.0), throwsArgumentError);
+    });
+
+    test('Rational.isMultipleOf throws on zero', () {
+      expect(() => Rational.parse('5').isMultipleOf(Rational.zero), throwsArgumentError);
+      expect(() => Rational.zero.isMultipleOf(Rational.zero), throwsArgumentError);
+    });
+  });
+
+  group('New Constants', () {
+    test('Additional fifths', () {
+      expect(RationalConstants.twoFifths, Rational.fromInt(2, 5));
+      expect(RationalConstants.threeFifths, Rational.fromInt(3, 5));
+      expect(RationalConstants.fourFifths, Rational.fromInt(4, 5));
+    });
+
+    test('Percentage constants', () {
+      expect(RationalConstants.onePercent, Rational.fromInt(1, 100));
+      expect(RationalConstants.fivePercent, Rational.fromInt(1, 20));
+      expect(RationalConstants.tenPercent, Rational.fromInt(1, 10));
+      expect(RationalConstants.twentyFivePercent, RationalConstants.quarter);
+      expect(RationalConstants.fiftyPercent, RationalConstants.half);
     });
   });
 }

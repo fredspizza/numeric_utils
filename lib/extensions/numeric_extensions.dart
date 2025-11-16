@@ -1,6 +1,21 @@
 // Copyright 2025 Brian Erst
 // SPDX-License-Identifier: MIT
 
+/// Provides extension methods for numeric types including rounding,
+/// formatting, parsing, and validation operations.
+///
+/// This library extends Dart's numeric types (int, double, BigInt, Rational)
+/// with practical utilities for financial calculations, measurements,
+/// and general numeric operations requiring precision.
+///
+/// Key features:
+/// - Multiple rounding modes (floor, ceil, truncate, up, halfUp, halfDown, halfEven)
+/// - Localized formatting for currency and percentages
+/// - Rational parsing with support for fractions and mixed numbers
+/// - Range checking and tolerance-based comparisons
+/// - Percentage calculations
+library;
+
 import 'dart:math' as math;
 
 import 'package:intl/intl.dart';
@@ -231,17 +246,25 @@ extension RationalRoundingExtension on Rational {
 extension RationalCommonRoundingExtension on Rational {
   /// Rounds the rational number to the nearest decimal place
   ///
+  /// Returns a Rational value rounded to the specified number of decimal places.
+  /// For formatted string output, see [RationalFormattingExtension.toDecimal].
+  ///
   /// Parameters:
-  ///   - `places`: The number of decimal places to round to
+  ///   - `decimalPlaces`: The number of decimal places to round to
   ///   - `mode`: The rounding mode to apply. Defaults to [RoundingMode.halfUp]
   ///
   /// Returns:
-  ///   The rational number rounded to the nearest decimal place
-  Rational toDecimalPlace(int places, {RoundingMode mode = RoundingMode.halfUp}) {
-    if (places < 0) {
-      throw ArgumentError('The number of places must be non-negative.');
+  ///   The rational number rounded to the nearest decimal place (as a Rational)
+  ///
+  /// See also:
+  /// - [toCents] for a common case of 2 decimal places
+  /// - [toNearest] for rounding to arbitrary increments
+  /// - [toNearestHalf], [toNearestThird], [toNearestQuarter] for common fractions
+  Rational toNearestDecimal(int decimalPlaces, {RoundingMode mode = RoundingMode.halfUp}) {
+    if (decimalPlaces < 0) {
+      throw ArgumentError('The number of decimal places must be non-negative.');
     }
-    final scale = Rational(BigInt.from(10).pow(places));
+    final scale = Rational(BigInt.from(10).pow(decimalPlaces));
     return (this * scale).rounded(mode) / scale;
   }
 
@@ -253,7 +276,7 @@ extension RationalCommonRoundingExtension on Rational {
   /// Returns:
   ///   The rational number rounded to the nearest cent
   Rational toCents([RoundingMode mode = RoundingMode.halfUp]) {
-    return toDecimalPlace(2, mode: mode);
+    return toNearestDecimal(2, mode: mode);
   }
 
   /// Rounds the rational number to the nearest half
@@ -300,25 +323,25 @@ extension RationalFormattingExtension on Rational {
   /// import 'package:numeric_utils/extensions/numeric_extensions.dart';
   /// import 'package:rational/rational.dart';
   ///
-  /// final rational = Rational.fromInt(1, 3);                                       // i.e., Rational.parse('1/3');
-  /// print(rational.toDecimalPlaces(3, locale: 'en_US'));                           // Output: 0.333
-  /// print(rational.toDecimalPlaces(3, mode: RoundingMode.up, locale: 'fr_FR'));    // Output: 0,334
+  /// final rational = Rational.fromInt(1, 3);                                   // i.e., Rational.parse('1/3');
+  /// print(rational.toDecimal(3, locale: 'en_US'));                             // Output: 0.333
+  /// print(rational.toDecimal(3, mode: RoundingMode.up, locale: 'fr_FR'));     // Output: 0,334
   ///
-  /// final quarter = Rational.fromInt(1, 4);                                        // i.e., Rational.parse('1/4');
-  /// print(quarter.toDecimalPlaces(3, locale: 'de_DE'));                            // Output: 0,250
-  /// print(quarter.toDecimalPlaces(3, stripTrailingZeros: true, locale: 'de_DE'));  // Output: 0,25
+  /// final quarter = Rational.fromInt(1, 4);                                    // i.e., Rational.parse('1/4');
+  /// print(quarter.toDecimal(3, locale: 'de_DE'));                              // Output: 0,250
+  /// print(quarter.toDecimal(3, stripTrailingZeros: true, locale: 'de_DE'));   // Output: 0,25
   ///
   /// // Using a custom pattern to show percentage with 2 decimal places
-  /// final percentage = Rational.fromInt(75, 100)                                   // i.e., Rational.parse('75/100');
-  /// print(percentage.toDecimalPlaces(2, pattern: '#.00%', locale: 'en_US'));       // Output: 75.00%
+  /// final percentage = Rational.fromInt(75, 100)                               // i.e., Rational.parse('75/100');
+  /// print(percentage.toDecimal(2, pattern: '#.00%', locale: 'en_US'));         // Output: 75.00%
   ///
   /// // Using a custom pattern to show currency
-  /// final price = Rational.fromInt(1999, 100)                                      // i.e., Rational.parse('1999/100');
-  /// print(price.toDecimalPlaces(2, pattern: '¤#,##0.00', locale: 'en_US'));        // Output: $19.99
+  /// final price = Rational.fromInt(1999, 100)                                  // i.e., Rational.parse('1999/100');
+  /// print(price.toDecimal(2, pattern: '¤#,##0.00', locale: 'en_US'));          // Output: $19.99
   /// ```
   ///
   /// Parameters:
-  ///   - `places`: The number of decimal places to include in the formatted string
+  ///   - `decimalPlaces`: The number of decimal places to include in the formatted string
   ///   - `mode`: The rounding mode to apply when truncating or rounding the number. Defaults to [RoundingMode.halfUp]
   ///   - `stripTrailingZeros`: If `true`, trailing zeros after the decimal point are removed. Defaults to `false`
   ///   - `locale`: The locale to use for formatting the number. Defaults to the system's default locale
@@ -328,21 +351,21 @@ extension RationalFormattingExtension on Rational {
   ///   A localized string representation of the rational number with the specified decimal places and rounding
   ///
   /// Throws:
-  ///   - `ArgumentError`: If `places` is negative
+  ///   - `ArgumentError`: If `decimalPlaces` is negative
   ///   - `FormatException`: If the number cannot be parsed or formatted
-  String toDecimalPlaces(
-    int places, {
+  String toDecimal(
+    int decimalPlaces, {
     RoundingMode mode = RoundingMode.halfUp,
     bool stripTrailingZeros = false,
     String? locale,
     String? pattern,
   }) {
-    if (places < 0) {
-      throw ArgumentError('The number of places must be non-negative.');
+    if (decimalPlaces < 0) {
+      throw ArgumentError('The number of decimal places must be non-negative.');
     }
 
     // Scale and round the number
-    final scale = BigInt.from(10).pow(places);
+    final scale = BigInt.from(10).pow(decimalPlaces);
     final scaled = (this * Rational(scale)).rounded(mode);
     final result = scaled / Rational(scale);
 
@@ -351,8 +374,8 @@ extension RationalFormattingExtension on Rational {
       final numberFormat = pattern != null ? NumberFormat(pattern, locale) : NumberFormat.decimalPattern(locale);
 
       // Configure decimal places
-      numberFormat.minimumFractionDigits = stripTrailingZeros ? 0 : places;
-      numberFormat.maximumFractionDigits = places;
+      numberFormat.minimumFractionDigits = stripTrailingZeros ? 0 : decimalPlaces;
+      numberFormat.maximumFractionDigits = decimalPlaces;
 
       // Return the formatted number
       return numberFormat.format(result.toDouble());
@@ -612,16 +635,120 @@ extension BigIntRoundedDivisionExtension on BigInt {
   }
 }
 
+/// Extension on `Rational` to provide percentage calculation utilities
+extension RationalPercentageExtension on Rational {
+  /// Calculates what percentage this value represents of the [total]
+  ///
+  /// Returns the percentage as a ratio (between 0 and 1, or beyond for values exceeding total).
+  ///
+  /// Example:
+  /// ```dart
+  /// Rational.parse("25").percentageOf(Rational.parse("100"));  // 1/4 (0.25 or 25%)
+  /// Rational.parse("30").percentageOf(Rational.parse("120"));  // 1/4 (0.25 or 25%)
+  /// Rational.parse("150").percentageOf(Rational.parse("100")); // 3/2 (1.5 or 150%)
+  /// Rational.parse("0").percentageOf(Rational.parse("100"));   // 0
+  /// ```
+  ///
+  /// Parameters:
+  /// - [total]: The total value to calculate the percentage against
+  ///
+  /// Returns:
+  /// - A Rational representing the percentage as a ratio (e.g., 0.25 for 25%)
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [total] is zero (division by zero)
+  Rational percentageOf(Rational total) {
+    if (total == Rational.zero) {
+      throw ArgumentError('Cannot calculate percentage of zero');
+    }
+    return this / total;
+  }
+
+  /// Applies this value as a percentage change to [baseValue]
+  ///
+  /// Treats this value as a percentage (e.g., 10 for 10%) and applies it
+  /// as an increase or decrease to [baseValue].
+  ///
+  /// Example:
+  /// ```dart
+  /// // 10% increase on 100 = 110
+  /// Rational.parse("10").percentChangeOn(Rational.parse("100"));   // 110
+  ///
+  /// // 25% increase on 80 = 100
+  /// Rational.parse("25").percentChangeOn(Rational.parse("80"));    // 100
+  ///
+  /// // -20% decrease on 100 = 80
+  /// Rational.parse("-20").percentChangeOn(Rational.parse("100"));  // 80
+  ///
+  /// // 50% increase on 200 = 300
+  /// Rational.parse("50").percentChangeOn(Rational.parse("200"));   // 300
+  /// ```
+  ///
+  /// Parameters:
+  /// - [baseValue]: The base value to apply the percentage change to
+  ///
+  /// Returns:
+  /// - The result of applying the percentage change to baseValue
+  Rational percentChangeOn(Rational baseValue) {
+    final multiplier = Rational.one + (this / Rational.fromInt(100));
+    return baseValue * multiplier;
+  }
+
+  /// Calculates the percentage difference between this value and [other]
+  ///
+  /// Returns the percentage difference as a ratio, calculated as:
+  /// `(this - other) / other`
+  ///
+  /// Positive values indicate this is greater than other.
+  /// Negative values indicate this is less than other.
+  ///
+  /// Example:
+  /// ```dart
+  /// // 110 is 10% more than 100
+  /// Rational.parse("110").percentDifferenceFrom(Rational.parse("100"));  // 1/10 (0.1 or 10%)
+  ///
+  /// // 90 is -10% compared to 100
+  /// Rational.parse("90").percentDifferenceFrom(Rational.parse("100"));   // -1/10 (-0.1 or -10%)
+  ///
+  /// // 150 is 50% more than 100
+  /// Rational.parse("150").percentDifferenceFrom(Rational.parse("100"));  // 1/2 (0.5 or 50%)
+  /// ```
+  ///
+  /// Parameters:
+  /// - [other]: The reference value to compare against
+  ///
+  /// Returns:
+  /// - A Rational representing the percentage difference as a ratio
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [other] is zero (division by zero)
+  Rational percentDifferenceFrom(Rational other) {
+    if (other == Rational.zero) {
+      throw ArgumentError('Cannot calculate percentage difference from zero');
+    }
+    return (this - other) / other;
+  }
+}
+
 /// Extension on `int` to support isMultipleOf
 extension IntMultipleOfExtension on int {
   /// Returns true if this int is a multiple of [other]
   ///
   /// Example:
   /// ```dart
-  /// 10.isMultipleOf(5); // Output: true
-  /// 11.isMultipleOf(5); // Output: false
+  /// 10.isMultipleOf(5); // true
+  /// 11.isMultipleOf(5); // false
+  /// 0.isMultipleOf(5);  // true (0 is a multiple of any number)
   /// ```
-  bool isMultipleOf(int other) => other == 0 ? this == 0 : this % other == 0;
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [other] is zero
+  bool isMultipleOf(int other) {
+    if (other == 0) {
+      throw ArgumentError('Cannot check if a number is a multiple of zero');
+    }
+    return this % other == 0;
+  }
 }
 
 /// Extension on `BigInt` to support isMultipleOf, isInRange
@@ -630,22 +757,43 @@ extension BigIntMultipleOfExtension on BigInt {
   ///
   /// Example:
   /// ```dart
-  /// BigInt.from(10).isMultipleOf(BigInt.from(5)); // Output: true
-  /// BigInt.from(11).isMultipleOf(BigInt.from(5)); // Output: false
+  /// BigInt.from(10).isMultipleOf(BigInt.from(5)); // true
+  /// BigInt.from(11).isMultipleOf(BigInt.from(5)); // false
+  /// BigInt.zero.isMultipleOf(BigInt.from(5));     // true (0 is a multiple of any number)
   /// ```
-  bool isMultipleOf(BigInt other) => other == BigInt.zero ? this == BigInt.zero : this % other == BigInt.zero;
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [other] is zero
+  bool isMultipleOf(BigInt other) {
+    if (other == BigInt.zero) {
+      throw ArgumentError('Cannot check if a number is a multiple of zero');
+    }
+    return this % other == BigInt.zero;
+  }
 }
 
 /// Extension on `double` to support isMultipleOf
 extension DoubleMultipleOfExtension on double {
   /// Returns true if this double is a multiple of [other]
   ///
+  /// Note: Due to floating-point precision, this may not behave as expected
+  /// for all values. Consider using [isCloseTo] for floating-point comparisons.
+  ///
   /// Example:
   /// ```dart
-  /// 10.0.isMultipleOf(5.0); // Output: true
-  /// 11.0.isMultipleOf(5.0); // Output: false
+  /// 10.0.isMultipleOf(5.0); // true
+  /// 11.0.isMultipleOf(5.0); // false
+  /// 0.0.isMultipleOf(5.0);  // true (0 is a multiple of any number)
   /// ```
-  bool isMultipleOf(double other) => other == 0 ? this == 0 : (this % other) == 0;
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [other] is zero
+  bool isMultipleOf(double other) {
+    if (other == 0) {
+      throw ArgumentError('Cannot check if a number is a multiple of zero');
+    }
+    return (this % other) == 0;
+  }
 }
 
 /// Extension on `Rational` to support isMultipleOf
@@ -654,10 +802,20 @@ extension RationalMultipleOfExtension on Rational {
   ///
   /// Example:
   /// ```dart
-  /// Rational.parse("10").isMultipleOf(Rational.parse("5")); // Output: true
-  /// Rational.parse("11").isMultipleOf(Rational.parse("5")); // Output: false
+  /// Rational.parse("10").isMultipleOf(Rational.parse("5"));   // true
+  /// Rational.parse("11").isMultipleOf(Rational.parse("5"));   // false
+  /// Rational.zero.isMultipleOf(Rational.parse("5"));          // true (0 is a multiple of any number)
+  /// Rational.parse("3/4").isMultipleOf(Rational.parse("1/4")); // true
   /// ```
-  bool isMultipleOf(Rational other) => other == Rational.zero ? this == Rational.zero : (this % other) == Rational.zero;
+  ///
+  /// Throws:
+  /// - `ArgumentError`: If [other] is zero
+  bool isMultipleOf(Rational other) {
+    if (other == Rational.zero) {
+      throw ArgumentError('Cannot check if a number is a multiple of zero');
+    }
+    return (this % other) == Rational.zero;
+  }
 }
 
 /// Extension on `int` to support isInRange

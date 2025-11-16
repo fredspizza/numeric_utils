@@ -15,9 +15,9 @@ void main() {
 
   // Negative decimal places
   try {
-    Rational.parse('1.23').toDecimalPlace(-1);
+    Rational.parse('1.23').toNearestDecimal(-1);
   } catch (e) {
-    // Output - Error: Invalid argument(s): The number of places must be non-negative.
+    // Output - Error: Invalid argument(s): The number of decimal places must be non-negative.
     print('Error: $e');
   }
 

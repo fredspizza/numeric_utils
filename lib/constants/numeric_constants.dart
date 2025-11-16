@@ -1,6 +1,18 @@
 // Copyright 2025 Brian Erst
 // SPDX-License-Identifier: MIT
 
+/// Provides useful numeric constants for int, BigInt, and Rational types.
+///
+/// This library includes:
+/// - Large number denominations (thousand, million, billion, etc.)
+/// - Common fractions (half, third, quarter, etc.)
+/// - Time-related fractions (hourFractionOfDay, etc.)
+/// - Computer science values (byte, word, kilobyte, etc.)
+///
+/// Note: Constants are computed at runtime (not compile-time const)
+/// due to Rational's constructor limitations.
+library;
+
 import 'package:rational/rational.dart';
 
 /// Provides useful constants for the `int` type
@@ -96,6 +108,15 @@ final class RationalConstants {
   /// Represents one fifth (1/5)
   static final Rational fifth = Rational.fromInt(1, 5);
 
+  /// Represents two fifths (2/5)
+  static final Rational twoFifths = Rational.fromInt(2, 5);
+
+  /// Represents three fifths (3/5)
+  static final Rational threeFifths = Rational.fromInt(3, 5);
+
+  /// Represents four fifths (4/5)
+  static final Rational fourFifths = Rational.fromInt(4, 5);
+
   /// Represents one sixth (1/6)
   static final Rational sixth = Rational.fromInt(1, 6);
 
@@ -120,7 +141,7 @@ final class RationalConstants {
   /// Represents one twentieth (1/20)
   static final Rational twentieth = Rational.fromInt(1, 20);
 
-  /// Represents one twentieth (1/20)
+  /// Represents one twenty-fifth (1/25)
   static final Rational twentyFifth = Rational.fromInt(1, 25);
 
   /// Represents one hundredth (1/100)
@@ -156,6 +177,27 @@ final class RationalConstants {
 
   /// Represents one second as a fraction of a day (1/86400).
   static final Rational secondFractionOfDay = Rational.fromInt(1, 86400);
+
+  // Common Percentages (as ratios for calculations)
+  /// Represents 1% as a ratio (1/100 or 0.01)
+  /// Useful for percentage calculations
+  static final Rational onePercent = Rational.fromInt(1, 100);
+
+  /// Represents 5% as a ratio (1/20 or 0.05)
+  /// Useful for percentage calculations
+  static final Rational fivePercent = Rational.fromInt(1, 20);
+
+  /// Represents 10% as a ratio (1/10 or 0.1)
+  /// Useful for percentage calculations
+  static final Rational tenPercent = Rational.fromInt(1, 10);
+
+  /// Represents 25% as a ratio (1/4 or 0.25)
+  /// Same as [quarter] but named for percentage context
+  static final Rational twentyFivePercent = quarter;
+
+  /// Represents 50% as a ratio (1/2 or 0.5)
+  /// Same as [half] but named for percentage context
+  static final Rational fiftyPercent = half;
 }
 
 /// Provides useful constants for the `BigInt` type

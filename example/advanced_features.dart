@@ -7,7 +7,7 @@ import 'package:numeric_utils/extensions/numeric_extensions.dart';
 void main() {
   // Formatting with custom pattern
   final rational = Rational.parse('0.75');
-  final formatted = rational.toDecimalPlaces(2, pattern: '#.00%');
+  final formatted = rational.toDecimal(2, pattern: '#.00%');
   print('Formatted: $formatted'); // Output: Formatted: 75.00%
 
   // Using halfEven rounding when the closest even is down

@@ -1,3 +1,49 @@
+### [0.4.0] - TBD
+
+#### Breaking Changes
+
+- **Renamed rounding method** for clarity and consistency:
+  - `RationalCommonRoundingExtension.toDecimalPlace(int places)` → `toNearestDecimal(int decimalPlaces)`
+  - This aligns with the naming pattern of `toNearestHalf()`, `toNearestThird()`, `toNearestQuarter()`, etc.
+
+- **Renamed formatting method** for clarity and consistency:
+  - `RationalFormattingExtension.toDecimalPlaces(int places)` → `toDecimal(int decimalPlaces)`
+  - This aligns with the naming pattern of `toPercentage()` and `toCurrency()`
+
+- **`isMultipleOf()` behavior change** for all numeric types (`int`, `double`, `BigInt`, `Rational`):
+  - Now throws `ArgumentError` when checking if a number is a multiple of zero
+  - Previously returned a boolean value (implementation-dependent)
+
+#### Added
+
+- **`RationalPercentageExtension`**: New extension providing percentage calculation utilities:
+  - `percentageOf(Rational total)`: Calculates what percentage this value represents of the total
+  - `percentChangeOn(Rational baseValue)`: Applies this value as a percentage change to the base value
+  - `percentDifferenceFrom(Rational other)`: Calculates the percentage difference between two values
+
+- **New `RationalConstants`**:
+  - `twoFifths` (2/5)
+  - `threeFifths` (3/5)
+  - `fourFifths` (4/5)
+  - `onePercent` (1/100 or 0.01)
+  - `fivePercent` (1/20 or 0.05)
+  - `tenPercent` (1/10 or 0.1)
+  - `twentyFivePercent` (1/4 or 0.25)
+  - `fiftyPercent` (1/2 or 0.5)
+
+#### Fixed
+
+- Fixed documentation typo in `RationalConstants.twentyFifth` (was incorrectly labeled as "twentieth")
+
+#### Documentation
+
+- Added library-level documentation to `numeric_constants.dart` explaining runtime constant computation
+- Added library-level documentation to `numeric_extensions.dart` describing key features
+- Added **Performance Notes** section to README explaining Rational vs. double trade-offs
+- Added **Troubleshooting** section to README with common issues and solutions
+- Added comprehensive **Migration Guide** to README for v0.4.0 and v0.3.0
+- Added `financial_calculations.dart` example demonstrating real-world financial use cases
+
 ### [0.3.1] - 2025-05-17
 
 #### Modified
