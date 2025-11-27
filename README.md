@@ -77,7 +77,7 @@ void main() {
 final value = Rational.parse("7.567");
   print('Original value: $value');
   print('Rounded to floor: ${value.rounded(RoundingMode.floor)}');
-  print('Rounded to 2 decimal places: ${value.toDecimalPlace(2)}');
+  print('Rounded to 2 decimal places: ${value.toDecimalString(2)}');
   print('Rounded to nearest quarter: ${value.toNearestQuarter()}');
 }
 ```
@@ -90,8 +90,8 @@ import 'package:rational/rational.dart';
 
 void main() {
   final price = Rational.parse("19.995");
-  print('Price in USD: ${price.toCurrency(locale: 'en_US')}');
-  print('Price in EUR: ${price.toCurrency(locale: 'fr_FR')}');
+  print('Price in USD: ${price.toCurrencyString(locale: 'en_US')}');
+  print('Price in EUR: ${price.toCurrencyString(locale: 'fr_FR')}');
 }
 ```
 
@@ -177,15 +177,15 @@ To run the examples, navigate to the `example/` directory and follow the instruc
 - **Solution:** Use full locale format: `'en_US'` not `'US'`, `'fr_FR'` not `'FR'`
   ```dart
   // ❌ Wrong
-  value.toCurrency(locale: 'US');
+  value.toCurrencyString(locale: 'US');
 
   // ✅ Correct
-  value.toCurrency(locale: 'en_US');
+  value.toCurrencyString(locale: 'en_US');
   ```
 
 **Method not found: `toDecimalPlace` or `toDecimalPlaces`**
 - **Problem:** Methods were renamed for clarity and consistency
-- **Solution:** Use `toNearestDecimal()` for rounding (returns Rational) or `toDecimal()` for formatting (returns String)
+- **Solution:** Use `toNearestDecimal()` for rounding (returns Rational) or `toDecimalString()` for formatting (returns String)
   ```dart
   // ❌ Old (pre-0.4.0) - for rounding
   value.toDecimalPlace(2);  // Returns Rational
@@ -194,12 +194,24 @@ To run the examples, navigate to the `example/` directory and follow the instruc
   value.toNearestDecimal(2);  // Returns Rational
 
   // ✅ New (0.4.0+) - for formatting
-  value.toDecimal(2, locale: 'en_US');  // Returns String "1.23"
+  value.toDecimalString(2, locale: 'en_US');  // Returns String "1.23"
   ```
 
 ## Migration Guide
 
-### Migrating to v0.4.0+ (Current Development)
+### Migrating to v0.4.2
+
+**Breaking Changes:** All formatting methods renamed to avoid conflicts with `decimal` package
+- **`toDecimal()` → `toDecimalString()`**
+  - **Action:** Rename all calls from `toDecimal()` to `toDecimalString()`
+- **`toPercentage()` → `toPercentageString()`**
+  - **Action:** Rename all calls from `toPercentage()` to `toPercentageString()`
+- **`toCurrency()` → `toCurrencyString()`**
+  - **Action:** Rename all calls from `toCurrency()` to `toCurrencyString()`
+
+All three methods return formatted strings, and the new names make this explicit while avoiding naming conflicts.
+
+### Migrating to v0.4.0
 
 **Breaking Changes:** Methods renamed for clarity and consistency with naming patterns
 - **Rounding method:**
@@ -207,10 +219,10 @@ To run the examples, navigate to the `example/` directory and follow the instruc
   - **New:** `toNearestDecimal(int decimalPlaces)` - returns Rational
   - **Action:** Rename to `toNearestDecimal` to match `toNearestHalf()`, `toNearestThird()`, etc.
 
-- **Formatting method:**
+- **Formatting method - Changed again in 0.4.2 so the below reflects that change:**
   - **Old:** `toDecimalPlaces(int places)` - returned String
-  - **New:** `toDecimal(int decimalPlaces)` - returns String
-  - **Action:** Rename to `toDecimal` to match `toPercentage()` and `toCurrency()`
+  - **New:** `toDecimalString(int decimalPlaces)` - returns String
+  - **Action:** Rename to `toDecimalString` to match `toPercentageString()` and `toCurrencyString()`
 
 **New Features:**
 - `isMultipleOf()` now throws `ArgumentError` when checking against zero (previously returned boolean)
@@ -219,9 +231,9 @@ To run the examples, navigate to the `example/` directory and follow the instruc
 
 ### Migrating to v0.3.0
 
-**Breaking Change:** `toPercentage` API changed
-- **Old:** `value.toPercentage(2, forcePlaces: true)`
-- **New:** `value.toPercentage(2, minDecimals: 2)`
+**Breaking Change:** `toPercentageString` API changed
+- **Old:** `value.toPercentageString(2, forcePlaces: true)`
+- **New:** `value.toPercentageString(2, minDecimals: 2)`
 - **Action:** Replace `forcePlaces` parameter with `minDecimals`
 
 **New Feature:** `tryFromString` now accepts null

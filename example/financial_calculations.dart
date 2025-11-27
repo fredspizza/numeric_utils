@@ -20,15 +20,15 @@ void main() {
     balance = balance + interest;
 
     if (year == 1 || year == 5 || year == 10) {
-      print('Year $year: ${balance.toCurrency(locale: 'en_US')} '
-            '(${interest.toCurrency(locale: 'en_US')} interest)');
+      print('Year $year: ${balance.toCurrencyString(locale: 'en_US')} '
+            '(${interest.toCurrencyString(locale: 'en_US')} interest)');
     }
   }
 
   final totalGain = balance - principal;
   final percentGain = totalGain.percentageOf(principal);
-  print('Total gain: ${totalGain.toCurrency(locale: 'en_US')} '
-        '(${percentGain.toPercentage(2)} return)\n');
+  print('Total gain: ${totalGain.toCurrencyString(locale: 'en_US')} '
+        '(${percentGain.toPercentageString(2)} return)\n');
 
   // Example 2: Tax Calculations with Multiple Brackets
   print('--- Income Tax Calculation ---');
@@ -59,16 +59,16 @@ void main() {
     remainingIncome = remainingIncome - taxableInBracket;
     previousLimit = limit;
 
-    print('Bracket ${rate.toPercentage(0, asRatio: true)}: '
-          '${taxableInBracket.toCurrency(locale: 'en_US')} → '
-          '${tax.toCurrency(locale: 'en_US')} tax');
+    print('Bracket ${rate.toPercentageString(0, asRatio: true)}: '
+          '${taxableInBracket.toCurrencyString(locale: 'en_US')} → '
+          '${tax.toCurrencyString(locale: 'en_US')} tax');
   }
 
   final effectiveRate = totalTax.percentageOf(income);
   final netIncome = income - totalTax;
-  print('Total tax: ${totalTax.toCurrency(locale: 'en_US')} '
-        '(${effectiveRate.toPercentage(2)} effective rate)');
-  print('Net income: ${netIncome.toCurrency(locale: 'en_US')}\n');
+  print('Total tax: ${totalTax.toCurrencyString(locale: 'en_US')} '
+        '(${effectiveRate.toPercentageString(2)} effective rate)');
+  print('Net income: ${netIncome.toCurrencyString(locale: 'en_US')}\n');
 
   // Example 3: Discount and Sales Price Calculations
   print('--- Retail Pricing ---');
@@ -78,15 +78,15 @@ void main() {
   final discountAmount = originalPrice * (discountPercent / Rational.fromInt(100));
   final salePrice = originalPrice - discountAmount;
 
-  print('Original price: ${originalPrice.toCurrency(locale: 'en_US')}');
-  print('Discount (${discountPercent.toPercentage(0, asRatio: false)}): '
-        '-${discountAmount.toCurrency(locale: 'en_US')}');
-  print('Sale price: ${salePrice.toCurrency(locale: 'en_US')}');
+  print('Original price: ${originalPrice.toCurrencyString(locale: 'en_US')}');
+  print('Discount (${discountPercent.toPercentageString(0, asRatio: false)}): '
+        '-${discountAmount.toCurrencyString(locale: 'en_US')}');
+  print('Sale price: ${salePrice.toCurrencyString(locale: 'en_US')}');
 
   // Using the new percentChangeOn helper
   final negativeTwenty = Rational.parse('-20');
   final salePriceHelper = negativeTwenty.percentChangeOn(originalPrice);
-  print('(Verified with percentChangeOn: ${salePriceHelper.toCurrency(locale: 'en_US')})\n');
+  print('(Verified with percentChangeOn: ${salePriceHelper.toCurrencyString(locale: 'en_US')})\n');
 
   // Example 4: Loan Amortization (Monthly Payment)
   print('--- Loan Payment Calculation ---');
@@ -102,9 +102,9 @@ void main() {
   // available for Rational. In practice, convert to double for this calculation
   // or use a specialized financial library.
 
-  print('Loan amount: ${loanAmount.toCurrency(locale: 'en_US')}');
-  print('Interest rate: ${annualInterestRate.toPercentage(2, asRatio: true)} APR');
-  print('Monthly rate: ${monthlyRate.toPercentage(4, asRatio: true)}');
+  print('Loan amount: ${loanAmount.toCurrencyString(locale: 'en_US')}');
+  print('Interest rate: ${annualInterestRate.toPercentageString(2, asRatio: true)} APR');
+  print('Monthly rate: ${monthlyRate.toPercentageString(4, asRatio: true)}');
   print('Term: $loanTermYears years ($numberOfPayments payments)');
   print('Note: Full amortization calculation requires exponential functions.\n');
 
@@ -121,12 +121,12 @@ void main() {
 
   allocations.forEach((asset, allocation) {
     final amount = portfolioValue * allocation;
-    print('$asset: ${amount.toCurrency(locale: 'en_US')} '
-          '(${allocation.toPercentage(0, asRatio: true)})');
+    print('$asset: ${amount.toCurrencyString(locale: 'en_US')} '
+          '(${allocation.toPercentageString(0, asRatio: true)})');
   });
 
   final totalAllocation = allocations.values.reduce((a, b) => a + b);
-  print('Total allocation: ${totalAllocation.toPercentage(0, asRatio: true)}\n');
+  print('Total allocation: ${totalAllocation.toPercentageString(0, asRatio: true)}\n');
 
   // Example 6: Currency Conversion with Rounding
   print('--- Currency Conversion ---');
@@ -134,17 +134,17 @@ void main() {
   final exchangeRate = Rational.parse('0.85'); // USD to EUR
 
   final eurAmount = usdAmount * exchangeRate;
-  print('${usdAmount.toCurrency(locale: 'en_US')} → '
-        '${eurAmount.toCurrency(locale: 'de_DE', currencyName: 'EUR')}');
+  print('${usdAmount.toCurrencyString(locale: 'en_US')} → '
+        '${eurAmount.toCurrencyString(locale: 'de_DE', currencyName: 'EUR')}');
 
   // With bank fees (2.5%)
   final feePercent = Rational.parse('2.5');
   final feeAmount = eurAmount * (feePercent / Rational.fromInt(100));
   final finalAmount = eurAmount - feeAmount;
 
-  print('Conversion fee (${feePercent.toPercentage(1, asRatio: false)}): '
-        '-${feeAmount.toCurrency(locale: 'de_DE', currencyName: 'EUR')}');
-  print('Final amount: ${finalAmount.toCurrency(locale: 'de_DE', currencyName: 'EUR')}\n');
+  print('Conversion fee (${feePercent.toPercentageString(1, asRatio: false)}): '
+        '-${feeAmount.toCurrencyString(locale: 'de_DE', currencyName: 'EUR')}');
+  print('Final amount: ${finalAmount.toCurrencyString(locale: 'de_DE', currencyName: 'EUR')}\n');
 
   // Example 7: Percentage Difference Between Periods
   print('--- Year-over-Year Growth ---');
@@ -154,10 +154,10 @@ void main() {
   final growthPercent = thisYearRevenue.percentDifferenceFrom(lastYearRevenue);
   final growthAmount = thisYearRevenue - lastYearRevenue;
 
-  print('Last year: ${lastYearRevenue.toCurrency(locale: 'en_US')}');
-  print('This year: ${thisYearRevenue.toCurrency(locale: 'en_US')}');
-  print('Growth: ${growthAmount.toCurrency(locale: 'en_US')} '
-        '(${growthPercent.toPercentage(2, asRatio: true)} increase)\n');
+  print('Last year: ${lastYearRevenue.toCurrencyString(locale: 'en_US')}');
+  print('This year: ${thisYearRevenue.toCurrencyString(locale: 'en_US')}');
+  print('Growth: ${growthAmount.toCurrencyString(locale: 'en_US')} '
+        '(${growthPercent.toPercentageString(2, asRatio: true)} increase)\n');
 
   // Example 8: Precise Decimal Calculations (avoiding float errors)
   print('--- Why Rational Matters for Finance ---');

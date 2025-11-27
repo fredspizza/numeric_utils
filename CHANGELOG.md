@@ -1,3 +1,13 @@
+### [0.4.2] - 2025-11-15
+
+#### Breaking Changes
+
+- **Renamed formatting methods** to avoid conflicts with the `decimal` package and improve clarity:
+  - `toDecimal()` → `toDecimalString()`
+  - `toPercentage()` → `toPercentageString()`
+  - `toCurrency()` → `toCurrencyString()`
+  - All three methods return formatted strings, and the new names make this explicit
+
 ### [0.4.1] - 2025-11-15
 
 #### Added

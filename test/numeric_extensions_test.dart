@@ -346,34 +346,34 @@ void main() {
   group('Rational Formatting Extensions', () {
     test('toCurrency', () {
       // Test currencies with decimal coins
-      expect(Rational.parse('19.99').toCurrency(locale: 'en_US'), '\$19.99');
-      expect(Rational.parse('19.994').toCurrency(locale: 'en_US'), '\$19.99');
-      expect(Rational.parse('19.99').toCurrency(locale: 'fr_FR'), '19,99\u00A0€');
+      expect(Rational.parse('19.99').toCurrencyString(locale: 'en_US'), '\$19.99');
+      expect(Rational.parse('19.994').toCurrencyString(locale: 'en_US'), '\$19.99');
+      expect(Rational.parse('19.99').toCurrencyString(locale: 'fr_FR'), '19,99\u00A0€');
 
       // Yen don't have "cents", so this should round to ¥20
-      expect(Rational.parse('19.99').toCurrency(locale: 'ja_JP'), '¥20');
+      expect(Rational.parse('19.99').toCurrencyString(locale: 'ja_JP'), '¥20');
 
       // Test with currencyName (we're explicitly overriding the locale)
-      expect(Rational.parse('19.99').toCurrency(locale: 'ja_JP', currencyName: 'USD'), '\$19.99');
+      expect(Rational.parse('19.99').toCurrencyString(locale: 'ja_JP', currencyName: 'USD'), '\$19.99');
 
       // Test with Kuwaiti Dinar (KWD) - 3 decimal places and right-to-left
-      expect(Rational.parse('19.999').toCurrency(locale: 'ar_KW', decimalDigits: 3), '\u200F19.999\u00A0E£');
+      expect(Rational.parse('19.999').toCurrencyString(locale: 'ar_KW', decimalDigits: 3), '\u200F19.999\u00A0E£');
 
       // Test with zero value
-      expect(Rational.zero.toCurrency(locale: 'en_US'), '\$0.00');
+      expect(Rational.zero.toCurrencyString(locale: 'en_US'), '\$0.00');
 
       // Test with negative value
-      expect(Rational.parse('-19.99').toCurrency(locale: 'en_US'), '-\$19.99');
-      expect(() => Rational.parse('19.99').toCurrency(locale: 'bad_locale'), throwsA(isA<ArgumentError>()));
+      expect(Rational.parse('-19.99').toCurrencyString(locale: 'en_US'), '-\$19.99');
+      expect(() => Rational.parse('19.99').toCurrencyString(locale: 'bad_locale'), throwsA(isA<ArgumentError>()));
     });
 
     test('toPercentage', () {
-      expect(Rational.fromInt(1, 3).toPercentage(2), '33.33%');
-      expect(Rational.fromInt(1, 3).toPercentage(0), '33%');
-      expect(Rational.fromInt(1, 3).toPercentage(2, mode: RoundingMode.ceil), '33.34%');
-      expect(Rational.fromInt(1, 3).toPercentage(2, locale: 'fr_FR'), '33,33%');
-      expect(Rational.fromInt(3, 10).toPercentage(2), '30%');
-      expect(Rational.fromInt(3, 10).toPercentage(2, minDecimals: 2), '30.00%');
+      expect(Rational.fromInt(1, 3).toPercentageString(2), '33.33%');
+      expect(Rational.fromInt(1, 3).toPercentageString(0), '33%');
+      expect(Rational.fromInt(1, 3).toPercentageString(2, mode: RoundingMode.ceil), '33.34%');
+      expect(Rational.fromInt(1, 3).toPercentageString(2, locale: 'fr_FR'), '33,33%');
+      expect(Rational.fromInt(3, 10).toPercentageString(2), '30%');
+      expect(Rational.fromInt(3, 10).toPercentageString(2, minDecimals: 2), '30.00%');
     });
   });
 

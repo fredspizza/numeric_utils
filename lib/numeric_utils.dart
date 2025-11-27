@@ -29,17 +29,17 @@
 ///   final total = price * (Rational.one + taxRate);
 ///
 ///   // Formatted output
-///   print(total.toCurrency(locale: 'en_US')); // $21.59
+///   print(total.toCurrencyString(locale: 'en_US')); // $21.59
 ///
 ///   // Percentage calculations
 ///   final discount = Rational.parse('15'); // 15%
 ///   final discountedPrice = discount.percentChangeOn(price);
-///   print(discountedPrice.toCurrency(locale: 'en_US')); // $22.99
+///   print(discountedPrice.toCurrencyString(locale: 'en_US')); // $22.99
 ///
 ///   // Common rounding
 ///   final value = Rational.parse('1.234');
 ///   print(value.toNearestDecimal(2)); // 617/500 (1.234 rounded to 2 places)
-///   print(value.toDecimal(2)); // "1.23" (formatted string)
+///   print(value.toDecimalString(2)); // "1.23" (formatted string)
 /// }
 /// ```
 ///

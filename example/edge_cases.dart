@@ -23,7 +23,7 @@ void main() {
 
   // Invalid locale
   try {
-    Rational.parse('19.99').toCurrency(locale: 'bad_locale');
+    Rational.parse('19.99').toCurrencyString(locale: 'bad_locale');
   } catch(e) {
     // Output - Error: Invalid argument(s): Invalid Locale
     print('Error: $e');

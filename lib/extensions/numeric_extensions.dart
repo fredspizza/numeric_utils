@@ -243,7 +243,7 @@ extension RationalCommonRoundingExtension on Rational {
   /// Rounds the rational number to the nearest decimal place
   ///
   /// Returns a Rational value rounded to the specified number of decimal places.
-  /// For formatted string output, see [RationalFormattingExtension.toDecimal].
+  /// For formatted string output, see [RationalFormattingExtension.toDecimalString].
   ///
   /// Parameters:
   ///   - `decimalPlaces`: The number of decimal places to round to
@@ -324,20 +324,20 @@ extension RationalFormattingExtension on Rational {
   /// import 'package:rational/rational.dart';
   ///
   /// final rational = Rational.fromInt(1, 3);                                   // i.e., Rational.parse('1/3');
-  /// print(rational.toDecimal(3, locale: 'en_US'));                             // Output: 0.333
-  /// print(rational.toDecimal(3, mode: RoundingMode.up, locale: 'fr_FR'));     // Output: 0,334
+  /// print(rational.toDecimalString(3, locale: 'en_US'));                             // Output: 0.333
+  /// print(rational.toDecimalString(3, mode: RoundingMode.up, locale: 'fr_FR'));     // Output: 0,334
   ///
   /// final quarter = Rational.fromInt(1, 4);                                    // i.e., Rational.parse('1/4');
-  /// print(quarter.toDecimal(3, locale: 'de_DE'));                              // Output: 0,250
-  /// print(quarter.toDecimal(3, stripTrailingZeros: true, locale: 'de_DE'));   // Output: 0,25
+  /// print(quarter.toDecimalString(3, locale: 'de_DE'));                              // Output: 0,250
+  /// print(quarter.toDecimalString(3, stripTrailingZeros: true, locale: 'de_DE'));   // Output: 0,25
   ///
   /// // Using a custom pattern to show percentage with 2 decimal places
   /// final percentage = Rational.fromInt(75, 100)                               // i.e., Rational.parse('75/100');
-  /// print(percentage.toDecimal(2, pattern: '#.00%', locale: 'en_US'));         // Output: 75.00%
+  /// print(percentage.toDecimalString(2, pattern: '#.00%', locale: 'en_US'));         // Output: 75.00%
   ///
   /// // Using a custom pattern to show currency
   /// final price = Rational.fromInt(1999, 100)                                  // i.e., Rational.parse('1999/100');
-  /// print(price.toDecimal(2, pattern: '¤#,##0.00', locale: 'en_US'));          // Output: $19.99
+  /// print(price.toDecimalString(2, pattern: '¤#,##0.00', locale: 'en_US'));          // Output: $19.99
   /// ```
   ///
   /// Parameters:
@@ -353,7 +353,7 @@ extension RationalFormattingExtension on Rational {
   /// Throws:
   ///   - `ArgumentError`: If `decimalPlaces` is negative
   ///   - `FormatException`: If the number cannot be parsed or formatted
-  String toDecimal(
+  String toDecimalString(
     int decimalPlaces, {
     RoundingMode mode = RoundingMode.halfUp,
     bool stripTrailingZeros = false,
@@ -400,17 +400,17 @@ extension RationalFormattingExtension on Rational {
   /// import 'package:rational/rational.dart';
   ///
   /// final rationalUnit = Rational.fromInt(1, 3);
-  /// print(rationalUnit.toPercentage(2));                          // Output: 33.33%
-  /// print(rationalUnit.toPercentage(2, mode: RoundingMode.ceil)); // Output: 33.34%
-  /// print(rationalUnit.toPercentage(0));                          // Output: 33%
-  /// print(rationalUnit.toPercentage(2, locale: 'fr_FR'));         // Output: 33,33%
+  /// print(rationalUnit.toPercentageString(2));                          // Output: 33.33%
+  /// print(rationalUnit.toPercentageString(2, mode: RoundingMode.ceil)); // Output: 33.34%
+  /// print(rationalUnit.toPercentageString(0));                          // Output: 33%
+  /// print(rationalUnit.toPercentageString(2, locale: 'fr_FR'));         // Output: 33,33%
   /// ```
   ///
   /// Example (when `asRatio` is false):
   /// ```dart
   /// final rationalPercentage = Rational.fromInt(66, 2);                           // Represents 33
-  /// print(rationalPercentage.toPercentage(2, asRatio: false));                    // Output: 33%
-  /// print(rationalPercentage.toPercentage(2, asRatio: false, forcePlaces: true)); // Output: 33.00%
+  /// print(rationalPercentage.toPercentageString(2, asRatio: false));                    // Output: 33%
+  /// print(rationalPercentage.toPercentageString(2, asRatio: false, forcePlaces: true)); // Output: 33.00%
   /// ```
   ///
   /// Parameters:
@@ -425,7 +425,7 @@ extension RationalFormattingExtension on Rational {
   ///
   /// Throws:
   ///   - `ArgumentError`: If `places` is negative.
-  String toPercentage(
+  String toPercentageString(
     int maxDecimals, {
     int minDecimals = 0,
     RoundingMode mode = RoundingMode.halfUp,
@@ -467,10 +467,10 @@ extension RationalFormattingExtension on Rational {
   /// import 'package:rational/rational.dart';
   ///
   /// final price = Rational.fromInt(1999, 100);  // i.e., Rational.parse('1999/100');
-  /// print(price.toCurrency(locale: 'en_US'));   // Output: $19.99
-  /// print(price.toCurrency(locale: 'fr_FR'));   // Output: 19,99 €
-  /// print(price.toCurrency(locale: 'ja_JP'));   // Output: ¥1,999
-  /// print(price.toCurrency(locale: 'en_US', currencyName: 'USD')); // Output: $19.99
+  /// print(price.toCurrencyString(locale: 'en_US'));   // Output: $19.99
+  /// print(price.toCurrencyString(locale: 'fr_FR'));   // Output: 19,99 €
+  /// print(price.toCurrencyString(locale: 'ja_JP'));   // Output: ¥1,999
+  /// print(price.toCurrencyString(locale: 'en_US', currencyName: 'USD')); // Output: $19.99
   /// ```
   ///
   /// Parameters:
@@ -484,7 +484,7 @@ extension RationalFormattingExtension on Rational {
   /// Throws:
   ///   - `FormatException`: If the number cannot be formatted.
   ///   - `ArgumentError`: If locale is invalid.
-  String toCurrency({
+  String toCurrencyString({
     String? locale,
     String? currencyName, // Changed from symbol to currencyName
     int? decimalDigits,
