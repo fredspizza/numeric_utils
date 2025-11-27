@@ -281,7 +281,7 @@ Here are the general steps for contributing to this project:
 
 We appreciate contributions in many forms, including:
 
-*   **Bug Reports:**  If you find a bug, please [open an issue](https://github.com/fredpizza/numeric_utils/issues) with clear steps to reproduce it.
+*   **Bug Reports:**  If you find a bug, please [open an issue](https://github.com/fredspizza/numeric_utils/issues) with clear steps to reproduce it.
 *   **Feature Requests:**  Have an idea for a new feature or enhancement?  [Open an issue](https://github.com/fredspizza/numeric_utils/issues) to discuss it!
 *   **Code Contributions:**  Fixes, new features, improvements to existing code - all welcome. Please follow the "How to Contribute" steps above.
 *   **Documentation Improvements:**  Help us make the documentation clearer, more comprehensive, or fix any errors.
