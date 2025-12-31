@@ -1,3 +1,11 @@
+### [0.4.3] - 2025-12-31
+
+#### Changed
+
+- **Upgraded `intl` dependency**: `^0.19.0` → `^0.20.2`
+  - This removes the constraint that was blocking downstream users from using newer versions of `intl`
+- **Upgraded `lints` dev dependency**: `^5.0.0` → `^6.0.0`
+
 ### [0.4.2] - 2025-11-15
 
 #### Breaking Changes

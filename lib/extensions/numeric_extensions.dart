@@ -998,7 +998,7 @@ extension DoubleToleranceExtension on double {
     if ((this - other).isInfinite) {
       return false; // Opposite infinities are not close
     }
-    return (this - other).abs() <= math.max(relativeTolerance * math.max(this.abs(), other.abs()), absoluteTolerance);
+    return (this - other).abs() <= math.max(relativeTolerance * math.max(abs(), other.abs()), absoluteTolerance);
   }
 }
 
