@@ -1,0 +1,24 @@
+# Git
+.git/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+*.swo
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build and coverage
+build/
+coverage/
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*~
