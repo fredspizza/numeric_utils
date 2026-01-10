@@ -25,9 +25,9 @@ A Dart library providing a collection of useful numeric constants and extension 
   - **isInRange Extensions:**
     - Extension methods for `int`, `double`, `BigInt` and `Rational` to check if a number is within a specified range.
   - **Tolerance Extensions:**
-    - Extension methods for `int`, `double`, `BigInt` and `Rational` to check if a number is within a specified tolerance 
+    - Extension methods for `int`, `double`, `BigInt` and `Rational` to check if a number is within a specified tolerance
       of another value.
-    - `isCloseTo` method for `double` to check if a double value is close to another value, considering floating-point inaccuracies.
+    - `isCloseTo` method for `double` and `Rational` to check if a value is close to another value using dual tolerance (relative + absolute).
   - **Rational Parsing:**
     - `RationalParsing.fromString` parses strings into `Rational` objects, supporting round-trip compatibility with `Rational.toString`.
     - Handles mixed numbers (e.g., `"1 3/4"`), simple fractions (e.g., `"3/4"`), integers, decimals, and scientific notation with flexible whitespace.

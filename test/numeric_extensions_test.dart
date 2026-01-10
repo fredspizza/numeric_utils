@@ -487,6 +487,31 @@ void main() {
       expect(Rational.fromInt(5).isWithinTolerance(Rational.fromInt(10), Rational.fromInt(4)), false);
       expect(() => Rational.fromInt(5).isWithinTolerance(Rational.fromInt(6), Rational.fromInt(-1)), throwsA(isA<AssertionError>()));
     });
+
+    test('Rational isCloseTo', () {
+      // Identical values
+      expect(Rational.fromInt(5).isCloseTo(Rational.fromInt(5)), true);
+
+      // Values within absolute tolerance
+      expect(Rational.fromInt(5).isCloseTo(Rational.fromInt(10), absoluteTolerance: Rational.fromInt(5)), true);
+      expect(Rational.fromInt(5).isCloseTo(Rational.fromInt(10), absoluteTolerance: Rational.fromInt(4)), false);
+
+      // Values within relative tolerance
+      expect(Rational.fromInt(100).isCloseTo(Rational.fromInt(101), relativeTolerance: RationalConstants.hundredth), true);
+      expect(Rational.fromInt(100).isCloseTo(Rational.fromInt(102), relativeTolerance: RationalConstants.hundredth), false);
+
+      // Custom tolerance values
+      expect(Rational.parse('1.001').isCloseTo(Rational.one, relativeTolerance: RationalConstants.thousandth), true);
+      expect(Rational.parse('1.01').isCloseTo(Rational.one, relativeTolerance: RationalConstants.thousandth), false);
+
+      // Near zero (absolute tolerance dominates)
+      expect(RationalConstants.trillionth.isCloseTo(Rational.zero), true);
+      expect(RationalConstants.billionth.isCloseTo(Rational.zero), false);
+
+      // Negative tolerance assertions
+      expect(() => Rational.fromInt(5).isCloseTo(Rational.fromInt(6), relativeTolerance: Rational.fromInt(-1)), throwsA(isA<AssertionError>()));
+      expect(() => Rational.fromInt(5).isCloseTo(Rational.fromInt(6), absoluteTolerance: Rational.fromInt(-1)), throwsA(isA<AssertionError>()));
+    });
   });
 
   group('DoubleToleranceExtension', () {

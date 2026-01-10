@@ -162,6 +162,9 @@ final class RationalConstants {
   /// Represents one billionth (1/1,000,000,000)
   static final Rational billionth = Rational.fromInt(1, 1000000000);
 
+  /// Represents one trillionth (1/1,000,000,000,000)
+  static final Rational trillionth = Rational.fromInt(1, 1000000000000);
+
   // Time/Measurement Related
   /// Represents one hour as a fraction of a day (1/24).
   static final Rational hourFractionOfDay = Rational.fromInt(1, 24);

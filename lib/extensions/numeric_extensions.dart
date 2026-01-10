@@ -1002,7 +1002,7 @@ extension DoubleToleranceExtension on double {
   }
 }
 
-/// Extension on `Rational` to support isWithinTolerance
+/// Extension on `Rational` to support isWithinTolerance and isCloseTo
 extension RationalToleranceExtension on Rational {
   /// Checks if this Rational is within a fixed [tolerance] of the [target] value.
   ///
@@ -1011,5 +1011,41 @@ extension RationalToleranceExtension on Rational {
   bool isWithinTolerance(Rational target, Rational tolerance) {
     assert(tolerance >= Rational.zero, 'Tolerance cannot be negative');
     return (this - target).abs() <= tolerance;
+  }
+
+  /// Checks if this Rational is close to [other] within the specified tolerances.
+  ///
+  /// Uses the same formula as the double version for API consistency:
+  /// `(this - other).abs() <= max(relativeTolerance * max(this.abs(), other.abs()), absoluteTolerance)`
+  ///
+  /// - [relativeTolerance]: Allowed difference relative to the magnitude of the numbers.
+  ///   Defaults to [RationalConstants.billionth] (1e-9).
+  /// - [absoluteTolerance]: Minimum allowed absolute difference.
+  ///   Defaults to [RationalConstants.trillionth] (1e-12).
+  /// Assumes tolerances are non-negative.
+  ///
+  /// Common tolerance values available in [RationalConstants]:
+  /// - [RationalConstants.hundredth] (1e-2)
+  /// - [RationalConstants.thousandth] (1e-3)
+  /// - [RationalConstants.tenThousandth] (1e-4)
+  /// - [RationalConstants.hundredThousandth] (1e-5)
+  /// - [RationalConstants.millionth] (1e-6)
+  /// - [RationalConstants.billionth] (1e-9)
+  /// - [RationalConstants.trillionth] (1e-12)
+  bool isCloseTo(
+    Rational other, {
+    Rational? relativeTolerance,
+    Rational? absoluteTolerance,
+  }) {
+    final relTol = relativeTolerance ?? RationalConstants.billionth;
+    final absTol = absoluteTolerance ?? RationalConstants.trillionth;
+    assert(relTol >= Rational.zero, 'Relative tolerance cannot be negative');
+    assert(absTol >= Rational.zero, 'Absolute tolerance cannot be negative');
+    if (this == other) return true;
+    final diff = (this - other).abs();
+    final maxMagnitude = abs() > other.abs() ? abs() : other.abs();
+    final relativeThreshold = relTol * maxMagnitude;
+    final threshold = relativeThreshold > absTol ? relativeThreshold : absTol;
+    return diff <= threshold;
   }
 }

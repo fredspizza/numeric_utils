@@ -1,3 +1,13 @@
+### [0.4.4] - 2026-01-10
+
+#### Added
+
+- **`Rational.isCloseTo`**: New tolerance extension method for `Rational` that mirrors the `double.isCloseTo` API
+  - Uses dual tolerance (relative + absolute) for consistent API with `double.isCloseTo`
+  - Defaults to `RationalConstants.billionth` (1e-9) for relative tolerance
+  - Defaults to `RationalConstants.trillionth` (1e-12) for absolute tolerance
+- **`RationalConstants.trillionth`**: New constant representing 1/1,000,000,000,000
+
 ### [0.4.3] - 2025-12-31
 
 #### Changed
