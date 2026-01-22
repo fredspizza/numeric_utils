@@ -1,3 +1,12 @@
+### [0.4.5] - 2026-01-21
+
+#### Added
+
+- **`RationalCodec`**: A utility class providing a canonical seam for `Rational` ↔ `String` conversions at persistence boundaries (JSON, SQLite, etc.)
+  - `encode(Rational)` → canonical string format via `toString()`
+  - `decode(String)` → parses string to `Rational`, throws `FormatException` on invalid input
+  - `tryDecode(String?)` → safe parsing that returns `null` on invalid/null input
+
 ### [0.4.4] - 2026-01-10
 
 #### Added

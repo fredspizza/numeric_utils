@@ -343,6 +343,46 @@ void main() {
     });
   });
 
+  group('RationalCodec', () {
+    test('encode produces canonical format', () {
+      expect(RationalCodec.encode(Rational.fromInt(3, 4)), '3/4');
+      expect(RationalCodec.encode(Rational.fromInt(7, 4)), '7/4');
+      expect(RationalCodec.encode(Rational.fromInt(-5, 2)), '-5/2');
+      expect(RationalCodec.encode(Rational.fromInt(2)), '2');
+    });
+
+    test('decode parses valid strings', () {
+      expect(RationalCodec.decode('3/4'), Rational.fromInt(3, 4));
+      expect(RationalCodec.decode('7/4'), Rational.fromInt(7, 4));
+      expect(RationalCodec.decode('1 3/4'), Rational.fromInt(7, 4));
+      expect(RationalCodec.decode('0.75'), Rational.fromInt(3, 4));
+    });
+
+    test('decode throws on invalid input', () {
+      expect(() => RationalCodec.decode('invalid'), throwsFormatException);
+      expect(() => RationalCodec.decode('1/0'), throwsFormatException);
+    });
+
+    test('tryDecode returns null on invalid input', () {
+      expect(RationalCodec.tryDecode('invalid'), isNull);
+      expect(RationalCodec.tryDecode('1/0'), isNull);
+      expect(RationalCodec.tryDecode(null), isNull);
+    });
+
+    test('round-trip encode/decode', () {
+      final values = [
+        Rational.fromInt(3, 4),
+        Rational.fromInt(7, 4),
+        Rational.fromInt(-5, 2),
+        Rational.fromInt(42),
+        Rational.parse('0.125'),
+      ];
+      for (final value in values) {
+        expect(RationalCodec.decode(RationalCodec.encode(value)), value);
+      }
+    });
+  });
+
   group('Rational Formatting Extensions', () {
     test('toCurrency', () {
       // Test currencies with decimal coins

@@ -605,6 +605,40 @@ class RationalParsing {
   }
 }
 
+/// A codec for encoding and decoding [Rational] values to and from strings.
+///
+/// This class provides a single, canonical seam for [Rational] ↔ [String]
+/// conversions at JSON/SQLite/persistence boundaries. It ensures consistent
+/// formatting and centralizes parsing logic.
+///
+/// Example:
+/// ```dart
+/// final encoded = RationalCodec.encode(Rational.fromInt(3, 4));  // "3/4"
+/// final decoded = RationalCodec.decode("3/4");                    // Rational(3, 4)
+/// final safe = RationalCodec.tryDecode("invalid");                // null
+/// ```
+class RationalCodec {
+  /// Encodes a [Rational] to its canonical string representation.
+  ///
+  /// Uses [Rational.toString] which produces fraction format (e.g., "3/4").
+  /// This is the format that should be used for persistence (JSON, SQLite, etc.).
+  static String encode(Rational value) => value.toString();
+
+  /// Decodes a string to a [Rational].
+  ///
+  /// Supports fractions, mixed numbers, integers, decimals, and scientific notation.
+  /// See [RationalParsing.fromString] for full format details.
+  ///
+  /// Throws [FormatException] if the string is not a valid format.
+  static Rational decode(String value) => RationalParsing.fromString(value);
+
+  /// Attempts to decode a string to a [Rational].
+  ///
+  /// Returns `null` if parsing fails or if the input is `null`.
+  /// Use this for user input or untrusted data sources.
+  static Rational? tryDecode(String? value) => RationalParsing.tryFromString(value);
+}
+
 /// Extension on `BigInt` to support division with rounding
 extension BigIntRoundedDivisionExtension on BigInt {
   /// Divides `this` by [denominator] and rounds the result using the specified [mode]

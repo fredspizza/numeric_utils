@@ -31,6 +31,9 @@ A Dart library providing a collection of useful numeric constants and extension 
   - **Rational Parsing:**
     - `RationalParsing.fromString` parses strings into `Rational` objects, supporting round-trip compatibility with `Rational.toString`.
     - Handles mixed numbers (e.g., `"1 3/4"`), simple fractions (e.g., `"3/4"`), integers, decimals, and scientific notation with flexible whitespace.
+  - **Rational Codec:**
+    - `RationalCodec` provides a canonical seam for `Rational` ↔ `String` conversions at persistence boundaries (JSON, SQLite, etc.).
+    - `encode`, `decode`, and `tryDecode` methods centralize serialization logic and ensure consistent formatting.
 
 ## Getting Started
 
