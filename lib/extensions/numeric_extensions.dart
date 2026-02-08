@@ -676,6 +676,23 @@ extension BigIntRoundedDivisionExtension on BigInt {
   }
 }
 
+/// Extension on `Rational` to convert directly to an `int`
+extension RationalToIntExtension on Rational {
+  /// Converts this Rational to an `int`.
+  ///
+  /// By default, truncates toward zero (matching `toBigInt()` behavior).
+  /// Optionally accepts a [RoundingMode] to round before converting.
+  ///
+  /// Example:
+  /// ```dart
+  /// print(Rational.parse('7.5').toInt());                          // 3
+  /// print(Rational.parse('7.5').toInt(RoundingMode.halfUp));       // 8
+  /// print(Rational.parse('-7.5').toInt(RoundingMode.floor));       // -8
+  /// ```
+  int toInt([RoundingMode mode = RoundingMode.truncate]) =>
+      rounded(mode).toBigInt().toInt();
+}
+
 /// Extension on `Rational` to provide percentage calculation utilities
 extension RationalPercentageExtension on Rational {
   /// Calculates what percentage this value represents of the [total]

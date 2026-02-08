@@ -1,3 +1,11 @@
+### [0.4.6] - 2026-02-07
+
+#### Added
+
+- **`Rational.toInt()`**: Extension method to convert a `Rational` directly to an `int`
+  - Accepts an optional `RoundingMode` parameter (defaults to `truncate`)
+  - Eliminates the need to chain `toBigInt().toInt()`
+
 ### [0.4.5] - 2026-01-21
 
 #### Added

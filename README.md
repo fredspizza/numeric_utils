@@ -18,6 +18,8 @@ A Dart library providing a collection of useful numeric constants and extension 
     - Localized formatting of `Rational` numbers as decimal strings with control over decimal places, rounding modes, and trailing zero stripping.
     - Localized currency formatting with locale and currency symbol/name customization.
     - Localized percentage formatting.
+  - **Rational to Int Conversion:**
+    - `toInt()` converts a `Rational` directly to an `int`, with an optional `RoundingMode` parameter (defaults to truncation).
   - **BigInt Rounded Division:**
     - Extension method for `BigInt` to perform division with various rounding modes.
   - **MultipleOf Extensions:**

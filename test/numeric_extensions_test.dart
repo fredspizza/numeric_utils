@@ -255,6 +255,57 @@ void main() {
     });
   });
 
+  group('Rational.toInt()', () {
+    test('Default truncation toward zero', () {
+      expect(Rational.parse('7.9').toInt(), 7);
+      expect(Rational.parse('-7.9').toInt(), -7);
+      expect(Rational.parse('3.5').toInt(), 3);
+      expect(Rational.parse('-3.5').toInt(), -3);
+    });
+
+    test('Exact integers', () {
+      expect(Rational.fromInt(4).toInt(), 4);
+      expect(Rational.fromInt(-4).toInt(), -4);
+    });
+
+    test('Zero', () {
+      expect(Rational.fromInt(0).toInt(), 0);
+    });
+
+    test('Floor rounding', () {
+      expect(Rational.parse('3.5').toInt(RoundingMode.floor), 3);
+      expect(Rational.parse('-3.5').toInt(RoundingMode.floor), -4);
+    });
+
+    test('Ceil rounding', () {
+      expect(Rational.parse('3.1').toInt(RoundingMode.ceil), 4);
+      expect(Rational.parse('-3.1').toInt(RoundingMode.ceil), -3);
+    });
+
+    test('Half-up rounding', () {
+      expect(Rational.parse('3.5').toInt(RoundingMode.halfUp), 4);
+      expect(Rational.parse('-3.5').toInt(RoundingMode.halfUp), -4);
+      expect(Rational.parse('3.4').toInt(RoundingMode.halfUp), 3);
+    });
+
+    test('Half-down rounding', () {
+      expect(Rational.parse('3.5').toInt(RoundingMode.halfDown), 3);
+      expect(Rational.parse('-3.5').toInt(RoundingMode.halfDown), -3);
+      expect(Rational.parse('3.6').toInt(RoundingMode.halfDown), 4);
+    });
+
+    test('Half-even rounding', () {
+      expect(Rational.parse('3.5').toInt(RoundingMode.halfEven), 4);
+      expect(Rational.parse('4.5').toInt(RoundingMode.halfEven), 4);
+      expect(Rational.parse('5.5').toInt(RoundingMode.halfEven), 6);
+    });
+
+    test('Up rounding (away from zero)', () {
+      expect(Rational.parse('3.1').toInt(RoundingMode.up), 4);
+      expect(Rational.parse('-3.1').toInt(RoundingMode.up), -4);
+    });
+  });
+
   group('RationalCommonRoundingExtension', () {
     test('toNearestDecimal', () {
       expect(Rational.parse('1.2345').toNearestDecimal(2), Rational.parse('1.23'));
