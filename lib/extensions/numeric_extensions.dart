@@ -133,7 +133,8 @@ extension RationalRoundingExtension on Rational {
   /// ```
   Rational rounded([RoundingMode mode = RoundingMode.halfUp]) {
     final BigInt wholeNumber = truncate(); // Extract integer part
-    final Rational fraction = this - Rational(wholeNumber); // Extract fractional part
+    final Rational fraction =
+        this - Rational(wholeNumber); // Extract fractional part
 
     // If it's already an integer, return as is
     if (fraction == Rational.zero) {
@@ -142,17 +143,23 @@ extension RationalRoundingExtension on Rational {
 
     switch (mode) {
       case RoundingMode.floor:
-        return fraction < Rational.zero ? Rational(wholeNumber - BigInt.one) : Rational(wholeNumber);
+        return fraction < Rational.zero
+            ? Rational(wholeNumber - BigInt.one)
+            : Rational(wholeNumber);
 
       case RoundingMode.ceil:
-        return fraction > Rational.zero ? Rational(wholeNumber + BigInt.one) : Rational(wholeNumber);
+        return fraction > Rational.zero
+            ? Rational(wholeNumber + BigInt.one)
+            : Rational(wholeNumber);
 
       case RoundingMode.truncate:
         return Rational(wholeNumber);
 
       case RoundingMode.up:
         // Round up for positive numbers, down for negative
-        return fraction > Rational.zero ? Rational(wholeNumber + BigInt.one) : Rational(wholeNumber - BigInt.one);
+        return fraction > Rational.zero
+            ? Rational(wholeNumber + BigInt.one)
+            : Rational(wholeNumber - BigInt.one);
 
       case RoundingMode.halfUp:
         return _roundedHalf(wholeNumber, fraction, roundUp: true);
@@ -166,13 +173,16 @@ extension RationalRoundingExtension on Rational {
   }
 
   /// Handles half-up and half-down rounding modes
-  Rational _roundedHalf(BigInt wholeNumber, Rational fraction, {required bool roundUp}) {
+  Rational _roundedHalf(BigInt wholeNumber, Rational fraction,
+      {required bool roundUp}) {
     final BigInt doubleNumerator = fraction.numerator * BigInt.two;
     final BigInt denominator = fraction.denominator;
 
     // Only round up if fraction is strictly greater than 0.5 OR if using halfUp
-    if (doubleNumerator.abs() > denominator || (roundUp && doubleNumerator.abs() == denominator)) {
-      return Rational(wholeNumber + (fraction > Rational.zero ? BigInt.one : -BigInt.one));
+    if (doubleNumerator.abs() > denominator ||
+        (roundUp && doubleNumerator.abs() == denominator)) {
+      return Rational(
+          wholeNumber + (fraction > Rational.zero ? BigInt.one : -BigInt.one));
     } else {
       return Rational(wholeNumber);
     }
@@ -188,13 +198,15 @@ extension RationalRoundingExtension on Rational {
     }
 
     if (doubleNumerator.abs() > denominator) {
-      return Rational(wholeNumber + (fraction > Rational.zero ? BigInt.one : -BigInt.one)); // Round up
+      return Rational(wholeNumber +
+          (fraction > Rational.zero ? BigInt.one : -BigInt.one)); // Round up
     }
 
     // If exactly halfway, round to the nearest even number
     return (wholeNumber.isEven)
         ? Rational(wholeNumber)
-        : Rational(wholeNumber + (fraction > Rational.zero ? BigInt.one : -BigInt.one));
+        : Rational(wholeNumber +
+            (fraction > Rational.zero ? BigInt.one : -BigInt.one));
   }
 
   /// Rounds the `Rational` value to the nearest multiple of [minIncrement]
@@ -227,7 +239,8 @@ extension RationalRoundingExtension on Rational {
   /// ```
   /// Throws:
   ///   - `ArgumentError`: If [minIncrement] is zero
-  Rational toNearest(Rational minIncrement, {RoundingMode mode = RoundingMode.halfUp}) {
+  Rational toNearest(Rational minIncrement,
+      {RoundingMode mode = RoundingMode.halfUp}) {
     if (minIncrement == Rational.zero) {
       throw ArgumentError('minIncrement cannot be zero');
     }
@@ -256,7 +269,8 @@ extension RationalCommonRoundingExtension on Rational {
   /// - [toCents] for a common case of 2 decimal places
   /// - [toNearest] for rounding to arbitrary increments
   /// - [toNearestHalf], [toNearestThird], [toNearestQuarter] for common fractions
-  Rational toNearestDecimal(int decimalPlaces, {RoundingMode mode = RoundingMode.halfUp}) {
+  Rational toNearestDecimal(int decimalPlaces,
+      {RoundingMode mode = RoundingMode.halfUp}) {
     if (decimalPlaces < 0) {
       throw ArgumentError('The number of decimal places must be non-negative.');
     }
@@ -371,16 +385,20 @@ extension RationalFormattingExtension on Rational {
 
     try {
       // Create number format based on locale and/or pattern
-      final numberFormat = pattern != null ? NumberFormat(pattern, locale) : NumberFormat.decimalPattern(locale);
+      final numberFormat = pattern != null
+          ? NumberFormat(pattern, locale)
+          : NumberFormat.decimalPattern(locale);
 
       // Configure decimal places
-      numberFormat.minimumFractionDigits = stripTrailingZeros ? 0 : decimalPlaces;
+      numberFormat.minimumFractionDigits =
+          stripTrailingZeros ? 0 : decimalPlaces;
       numberFormat.maximumFractionDigits = decimalPlaces;
 
       // Return the formatted number
       return numberFormat.format(result.toDouble());
     } on FormatException catch (e) {
-      throw FormatException('Failed to format number: ${e.message}', e.source, e.offset);
+      throw FormatException(
+          'Failed to format number: ${e.message}', e.source, e.offset);
     }
   }
 
@@ -437,7 +455,8 @@ extension RationalFormattingExtension on Rational {
     }
 
     if (maxDecimals < minDecimals) {
-      throw ArgumentError('maxDecimals must be greater than or equal to minDecimals.');
+      throw ArgumentError(
+          'maxDecimals must be greater than or equal to minDecimals.');
     }
 
     Rational valueToFormat = this;
@@ -498,7 +517,8 @@ extension RationalFormattingExtension on Rational {
 
       return numberFormat.format(toDouble());
     } on FormatException catch (e) {
-      throw FormatException('Failed to format currency: ${e.message}', e.source, e.offset);
+      throw FormatException(
+          'Failed to format currency: ${e.message}', e.source, e.offset);
     } catch (e) {
       throw ArgumentError('Invalid Locale');
     }
@@ -516,7 +536,8 @@ class RationalParsing {
   // - (?:(\d+)\s+)?\s*: Optional whole part with optional whitespace around it
   // - (\d+)\s*/\s*(\d+): Fraction part with optional whitespace around the slash
   // - \s*: Optional whitespace at the end
-  static final fractionRegex = RegExp(r'^\s*(-)?\s*(?:(\d+)\s+)?(\d+)\s*/\s*(\d+)\s*$');
+  static final fractionRegex =
+      RegExp(r'^\s*(-)?\s*(?:(\d+)\s+)?(\d+)\s*/\s*(\d+)\s*$');
 
   /// Parses a string into a [Rational] object, supporting fractions, mixed numbers,
   /// integers, decimals, and scientific notation.
@@ -636,7 +657,8 @@ class RationalCodec {
   ///
   /// Returns `null` if parsing fails or if the input is `null`.
   /// Use this for user input or untrusted data sources.
-  static Rational? tryDecode(String? value) => RationalParsing.tryFromString(value);
+  static Rational? tryDecode(String? value) =>
+      RationalParsing.tryFromString(value);
 }
 
 /// Extension on `BigInt` to support division with rounding
@@ -1039,7 +1061,8 @@ extension DoubleToleranceExtension on double {
   bool isCloseTo(
     double other, {
     double relativeTolerance = 1e-9, // Default from Python's math.isclose
-    double absoluteTolerance = 1e-12, // Differs from Python's math.isclose (which is 0.0)
+    double absoluteTolerance =
+        1e-12, // Differs from Python's math.isclose (which is 0.0)
   }) {
     assert(relativeTolerance >= 0, 'Relative tolerance cannot be negative');
     assert(absoluteTolerance >= 0, 'Absolute tolerance cannot be negative');
@@ -1049,7 +1072,9 @@ extension DoubleToleranceExtension on double {
     if ((this - other).isInfinite) {
       return false; // Opposite infinities are not close
     }
-    return (this - other).abs() <= math.max(relativeTolerance * math.max(abs(), other.abs()), absoluteTolerance);
+    return (this - other).abs() <=
+        math.max(relativeTolerance * math.max(abs(), other.abs()),
+            absoluteTolerance);
   }
 }
 
